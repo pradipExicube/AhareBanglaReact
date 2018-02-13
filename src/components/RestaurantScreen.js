@@ -2,15 +2,33 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
-  View
+  View,
+  Image
 } from 'react-native';
+import Card from './Card';
+import CardSection from './CardSection';
 
 const RestaurantScreen = () => {
+    const { IconStyle } = styles;
   return (
-    <View style={styles.container}>
-      <Text style={styles.welcome}>
-        Restaurant
-      </Text>
+    <View>
+      <Card>
+          <CardSection>
+            <Image
+                style={IconStyle}
+                source={require('../assets/images/wowmomo.png')}
+            />
+            <Text></Text>
+          </CardSection>
+      </Card>
+      <Card>
+          <CardSection>
+            <Image
+                style={IconStyle}
+                source={require('../assets/images/wowmomo.png')}
+            />
+          </CardSection>
+      </Card>
     </View>
   );
 }
@@ -22,11 +40,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#13A2CE',
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-    color: '#ffffff',
+  IconStyle: {
+    width: 80,
+    height: 80, 
+    marginLeft:10, 
+    marginRight:10, 
+    marginTop:20, 
+    marginBottom:20 
   },
 });
 
