@@ -2,25 +2,29 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
-  View
+  View,
+  Dimensions,
+  Image,
+  ScrollView
 } from 'react-native';
 
 const MapScreen = () => {
+ var {width,height} = Dimensions.get('window');
   return (
-    <View style={styles.container}>
-      <Text style={styles.welcome}>
-        Map
-      </Text>
-    </View>
+      <ScrollView>
+        <ScrollView horizontal>
+        <Image
+                style={{width: 2616 ,height: 628,}}
+                source={require('../assets/images/map.jpg')}
+            />
+        </ScrollView>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#13A2CE',
   },
   welcome: {
     fontSize: 20,
