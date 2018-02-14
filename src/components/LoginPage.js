@@ -7,10 +7,49 @@ import {
   Dimensions,
   Button,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert
 } from 'react-native';
+import {Facebook} from 'expo';
+import firebase from 'firebase';
 var {width,height} = Dimensions.get('window');
 export default class LoginPage extends Component {
+    FBlogIn= async () => {
+    try{
+        const { type, token } = await Facebook.logInWithReadPermissionsAsync('391312557981050', {
+            permissions: ['public_profile','email', 'user_friends'],
+            });
+            
+        if (type === 'success') {
+            //alert("success");
+            console.log(token);
+
+            // Build Firebase credential with the Facebook access token.
+            const credential = await firebase.auth.FacebookAuthProvider.credential(token);
+            console.log(credential);
+            // Sign in with credential from the Facebook user.
+            
+            // Get the user's name using Facebook's Graph API
+            const response = await firebase.auth().signInWithCredential(credential).then((user)=>{
+                console.log("success found"+user)
+            })
+            //console.log("firebase")
+            // .then((authenticatedUser)=>{ 
+            //     console.log("authenticatedUser");
+            // })
+            .catch(() => {
+            // Handle Errors here.
+            console.log("error");
+            });
+            console.log(response)
+        }else{
+            alert("success false");
+        }
+    }catch(e){
+        console.log(e);
+    }
+    }
+ 
   render() {
     return (
       <View
@@ -52,7 +91,7 @@ export default class LoginPage extends Component {
         </View>
 
         <TouchableOpacity style={styles.fbbutton} 
-            onPress={()=>{alert("you clicked me")}}
+            onPress={()=> {this.FBlogIn()} }
         >
             <Image style={styles.buttonImageStyle}
                 source={require('../assets/images/facebookImg.png')}/>

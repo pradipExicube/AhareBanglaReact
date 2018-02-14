@@ -5,7 +5,7 @@ import HomeScreen from './src/components/HomeScreen';
 import MapScreen from './src/components/MapScreen';
 import RestaurantScreen from './src/components/RestaurantScreen';
 import NewsScreen from './src/components/NewsScreen';
-import firebase from 'firebase';
+import * as firebase from 'firebase';
 import LoginPage from './src/components/LoginPage'
 
 export default class App extends Component {
