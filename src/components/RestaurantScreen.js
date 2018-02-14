@@ -5,8 +5,8 @@ import {
   View,
   Image
 } from 'react-native';
-import Card from './Card';
-import CardSection from './CardSection';
+import Card from './common/Card';
+import CardSection from './common/CardSection';
 
 const RestaurantScreen = () => {
     const { IconStyle } = styles;
