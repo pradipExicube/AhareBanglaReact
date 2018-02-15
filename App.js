@@ -1,12 +1,14 @@
 import React,{ Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { Router, Scene,Tabs } from 'react-native-router-flux';
+import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { Router, Scene,Tabs, Stack } from 'react-native-router-flux';
 import HomeScreen from './src/components/HomeScreen';
 import MapScreen from './src/components/MapScreen';
 import RestaurantScreen from './src/components/RestaurantScreen';
 import NewsScreen from './src/components/NewsScreen';
 import * as firebase from 'firebase';
 import LoginPage from './src/components/LoginPage'
+import ProgrammeSchedule from './src/components/ProgrammeSchedule';
+import Parking from './src/components/Parking';
 
 export default class App extends Component {
   state = { loggedIn: true };
@@ -35,12 +37,16 @@ export default class App extends Component {
       console.log("We are authenticated now!");
       return (
         <Router>
+          <Scene key='root'>
             <Tabs key="root" tabs={true} tabBarPosition="bottom" tabBarStyle={styles.tabBar}>
-                <Scene key="tab1" initial={true} title="Home" component={HomeScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} style={{color:'red'}}/>
-                <Scene key="tab2" title="Map" component={MapScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}}/>
-                <Scene key="tab3"  title="Restaurant" component={RestaurantScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}}/>
-                <Scene key="tab4"  title="News" component={NewsScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}}/>
+                <Scene key="home" initial={true} title="Home" component={HomeScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} style={{color:'red'}}/>
+                <Scene key="map" title="Map" component={MapScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}}/>
+                <Scene key="restaurant"  title="Restaurant" component={RestaurantScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}}/>
+                <Scene key="news"  title="News" component={NewsScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}}/>
             </Tabs>
+            <Scene key="programmeSchedule" title="Programme Schedule"  component={ProgrammeSchedule} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}}/>
+            <Scene key="parking" title="Parking"  component={Parking} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}}/>
+          </Scene>    
         </Router>
       );
     }
