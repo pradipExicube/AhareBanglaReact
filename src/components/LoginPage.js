@@ -10,45 +10,71 @@ import {
   TouchableOpacity,
   Alert
 } from 'react-native';
-import {Facebook} from 'expo';
+import { Facebook, Google } from 'expo';
 import firebase from 'firebase';
 var {width,height} = Dimensions.get('window');
 export default class LoginPage extends Component {
-    FBlogIn= async () => {
-    try{
-        const { type, token } = await Facebook.logInWithReadPermissionsAsync('391312557981050', {
-            permissions: ['public_profile','email', 'user_friends'],
-            });
-            
-        if (type === 'success') {
-            //alert("success");
-            console.log(token);
+    FBlogIn = async () => {
+      try{
+          const { type, token } = await Facebook.logInWithReadPermissionsAsync('391312557981050', {
+              permissions: ['public_profile','email', 'user_friends'],
+              behavior:'web'
+              });
+              
+          if (type === 'success') {
+              console.log(token);
+              const credential = await firebase.auth.FacebookAuthProvider.credential(token);
+              console.log(credential);
+              const response = await firebase.auth().signInWithCredential(credential)
+              .then((user)=>{
+                  console.log("success found"+user)
+              })
+              .catch(() => {
+              console.log("error");
+              });
+              console.log(response)
+          }
+          else{
+              alert("success false");
+          }
+      }catch(e){
+          console.log(e);
+      }
+    }
 
-            // Build Firebase credential with the Facebook access token.
-            const credential = await firebase.auth.FacebookAuthProvider.credential(token);
-            console.log(credential);
-            // Sign in with credential from the Facebook user.
-            
-            // Get the user's name using Facebook's Graph API
-            const response = await firebase.auth().signInWithCredential(credential).then((user)=>{
-                console.log("success found"+user)
-            })
-            //console.log("firebase")
-            // .then((authenticatedUser)=>{ 
-            //     console.log("authenticatedUser");
-            // })
-            .catch(() => {
-            // Handle Errors here.
-            console.log("error");
-            });
-            console.log(response)
-        }else{
-            alert("success false");
+    GooglelogIn = async () => {
+      const result = await this.signInWithGoogleAsync()
+      // if there is no result.error or result.cancelled, the user is logged in
+      // do something with the result
+      }
+      signInWithGoogleAsync = async () => {
+        try {
+          console.log("google plus login start")
+          const result = await Google.logInAsync({
+            androidClientId: "818648944845-1blv3luuul3t2n0op4eluihgifvedhj0.apps.googleusercontent.com",
+            iosClientId: "818648944845-u5pgfmuj7a8p5093udm0312r5l2dn1dh.apps.googleusercontent.com",
+            scopes: ['profile', 'email'],
+            behavior:'web'
+          });
+          
+          if (result.type === 'success') {
+            //console.log("result");
+            const credential = await firebase.auth.GoogleAuthProvider.credential(result.idToken);
+              console.log(credential);
+              const response = await firebase.auth().signInWithCredential(credential)
+              .then((user)=>{
+                  console.log(user)
+              })
+              .catch(() => {
+              console.log("error");
+              });
+          } else {
+            console.log(result);
+          }
+        } catch(e) {
+          return {error: true};
         }
-    }catch(e){
-        console.log(e);
-    }
-    }
+      }
  
   render() {
     return (
@@ -99,7 +125,7 @@ export default class LoginPage extends Component {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.googlebutton} 
-            onPress={()=>{alert("you clicked me")}}
+            onPress={()=>{this.GooglelogIn()}}
         >
             <Image style={styles.buttonImageStyle}
                    source={require('../assets/images/googlePlusImg.png')}/>
@@ -197,3 +223,8 @@ const styles = StyleSheet.create({
       }
 })
 
+// Android ClientId:: 818648944845-1blv3luuul3t2n0op4eluihgifvedhj0.apps.googleusercontent.com
+// iOS ClientID::: 818648944845-u5pgfmuj7a8p5093udm0312r5l2dn1dh.apps.googleusercontent.com
+
+/*//,
+    //"android.config.googleSignIn.apiKey": "AIzaSyBovdcoqAtojPAndSqz2cSFlc0groOR5pk"*/
