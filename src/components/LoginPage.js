@@ -27,7 +27,15 @@ export default class LoginPage extends Component {
               console.log(credential);
               const response = await firebase.auth().signInWithCredential(credential)
               .then((user)=>{
-                  console.log("success found"+user)
+                console.log(user);
+                firebase.database().ref('users').child(user.uid).set({
+                  username: user.displayName,
+                  useremail: user.email,
+                  userimage: user.photoURL,
+                  facebookToken: token,
+                  logintype:"facebook",
+                  usertype:"basic"
+                });
               })
               .catch(() => {
               console.log("error");
@@ -56,19 +64,31 @@ export default class LoginPage extends Component {
             scopes: ['profile', 'email'],
             behavior:'web'
           });
-          
           if (result.type === 'success') {
             //console.log("result");
             const credential = await firebase.auth.GoogleAuthProvider.credential(result.idToken);
               console.log(credential);
               const response = await firebase.auth().signInWithCredential(credential)
               .then((user)=>{
-                  console.log(user)
+                console.log(user);
+                console.log(result);
+                var userData = result.user;
+                firebase.database().ref('users').child(user.uid).set({
+                  username: user.displayName,
+                  useremail: userData.email,
+                  userimage: userData.photoUrl,
+                  googleUserId: userData.id,
+                  googleToken: result.idToken,
+                  logintype: "google",
+                  usertype: "basic"
+                });	 
               })
               .catch(() => {
               console.log("error");
               });
-          } else {
+              console.log(response);
+            } 
+          else {
             console.log(result);
           }
         } catch(e) {

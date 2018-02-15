@@ -9,6 +9,7 @@ import * as firebase from 'firebase';
 import LoginPage from './src/components/LoginPage'
 
 export default class App extends Component {
+  state = { loggedIn: true };
   componentWillMount() {
     // Initialize Firebase
     var config = {
@@ -20,19 +21,41 @@ export default class App extends Component {
       messagingSenderId: "818648944845"
     };
     firebase.initializeApp(config);
+    firebase.auth().onAuthStateChanged((user)=>{
+      if(user){
+          this.setState({ loggedIn: true });
+      }else{
+          this.setState({ loggedIn: false });
+      }
+    });
   }
-  render() {
-    return (
-      <View style={styles.container}>
-        {/* <Router>
+
+  authenticateUser() {
+    if (this.state.loggedIn == true) {
+      console.log("We are authenticated now!");
+      return (
+        <Router>
             <Tabs key="root" tabs={true} tabBarPosition="bottom" tabBarStyle={styles.tabBar}>
                 <Scene key="tab1" initial={true} title="Home" component={HomeScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} style={{color:'red'}}/>
                 <Scene key="tab2" title="Map" component={MapScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}}/>
                 <Scene key="tab3"  title="Restaurant" component={RestaurantScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}}/>
                 <Scene key="tab4"  title="News" component={NewsScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}}/>
             </Tabs>
-        </Router> */}
+        </Router>
+      );
+    }
+    else {
+      console.log("loginpage");
+      return (
         <LoginPage />
+      );
+    }
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        {this.authenticateUser()}
       </View>
     );
   }
