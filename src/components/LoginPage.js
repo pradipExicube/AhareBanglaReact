@@ -107,7 +107,6 @@ export default class LoginPage extends Component {
         <View
           style={{
             position: 'absolute',
-            top: (height-(height-24)),
             width: '100%',
             height: '100%',
           }}

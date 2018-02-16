@@ -39,10 +39,10 @@ const HomeScreen = () => {
   return (
     <View style={container}>
         <Image
-            style={{width: width ,height: 200,}}
+            style={{width: width ,height: 200, top: 20}}
             source={require('../assets/images/homeBanner.jpg')}
         />
-        <ScrollView style={{height:(height-300), width: width}}>
+        <ScrollView style={{height:(height-300), width: width, top: 20}}>
             <TouchableOpacity onPress={this.openAbout}>
                 <View style={ListStyle}>
                     <Image
@@ -115,6 +115,7 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
+    bottom: 28
   },
   ListStyle:{
     flexDirection:'row',
