@@ -5,7 +5,8 @@ import {
   View,
   Image,
   Dimensions,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  ScrollView
 } from 'react-native';
 import Card from './common/Card';
 import CardSection from './common/CardSection';
@@ -15,7 +16,7 @@ var {width,height} = Dimensions.get('window');
 
 const NewsScreen = () => {
   return (
-    <View>
+    <ScrollView style={{width: width, height: height-135}}>
       <Card>
         <TouchableWithoutFeedback onPress={()=>{alert('news')}}>
           <View style={{ margin: 10 }}>
@@ -45,7 +46,8 @@ const NewsScreen = () => {
           </View>
         </TouchableWithoutFeedback>
       </Card>
-    </View>
+    </ScrollView>
+
   );
 }
 

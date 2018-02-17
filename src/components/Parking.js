@@ -13,10 +13,10 @@ const Parking = () => {
   return (
       <ScrollView>
         <ScrollView horizontal>
-        <Image
-            style={{ width: 1682, height: 693 }}
-            source={require('../assets/images/Parking.jpg')}
-        />
+          <Image
+              style={{ width: 1682, height: 693 }}
+              source={require('../assets/images/Parking.jpg')}
+          />
         </ScrollView>
     </ScrollView>
   );

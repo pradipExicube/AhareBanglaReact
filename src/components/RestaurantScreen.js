@@ -4,12 +4,17 @@ import {
   Text,
   View,
   Image,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  ScrollView,
+  Dimensions
 } from 'react-native';
 import Card from './common/Card';
 import CardSection from './common/CardSection';
 import StarRating from 'react-native-star-rating';
 import { Icon } from 'react-native-elements'
+import { Actions } from 'react-native-router-flux';
+
+var {width,height} = Dimensions.get('window');
 
 export default class RestaurantScreen extends Component {
   constructor(props) {
@@ -18,35 +23,38 @@ export default class RestaurantScreen extends Component {
       starCount: 3.5
     };
   }
+  goFoodmenu() {
+    Actions.foodmenu();
+  }
       
-      onStarRatingPress(rating) {
-        this.setState({
-          starCount: rating
-        });
-      }
-      render() {
+  onStarRatingPress(rating) {
+    this.setState({
+      starCount: rating
+    });
+  }
+  render() {
     return (
-      <View>
+      <ScrollView style={{width: width, height: height-135}}>
         <Card>
           <CardSection>
-            <TouchableWithoutFeedback onPress={()=>{alert('food_menu')}}>
+            <TouchableWithoutFeedback onPress={this.goFoodmenu}>
               <Image
                   style={styles.IconStyle}
                   source={require('../assets/images/wowmomo.png')}
               />
             </TouchableWithoutFeedback>
             <View style={{ marginTop: 10, marginLeft: 10, }}>
-              <TouchableWithoutFeedback onPress={()=>{alert('food_menu')}}>
+              <TouchableWithoutFeedback onPress={this.goFoodmenu}>
                 <View>
                   <Text style={{ color: '#005696' }}>KAVIAR</Text>
                 </View>
               </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback onPress={()=>{alert('food_menu')}}>
+              <TouchableWithoutFeedback onPress={this.goFoodmenu}>
                 <View>
                   <Text style={{ color: '#012f51', marginTop: 12 }}>Hanger A</Text>
                 </View>
                 </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback onPress={()=>{alert('food_menu')}}>
+              <TouchableWithoutFeedback onPress={this.goFoodmenu}>
                 <View>  
                   <Text style={{ color: '#b1b1b1', marginTop: 12 }}>Stall No: 43</Text>
                 </View>
@@ -82,15 +90,7 @@ export default class RestaurantScreen extends Component {
             </View>
           </CardSection>
         </Card>
-        <Card>
-            <CardSection>
-              <Image
-                  style={styles.IconStyle}
-                  source={require('../assets/images/wowmomo.png')}
-              />
-            </CardSection>
-        </Card>
-      </View>
+      </ScrollView>
     );
   }
 }

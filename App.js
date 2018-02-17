@@ -9,6 +9,9 @@ import * as firebase from 'firebase';
 import LoginPage from './src/components/LoginPage'
 import ProgrammeSchedule from './src/components/ProgrammeSchedule';
 import Parking from './src/components/Parking';
+import FoodMenu from './src/components/FoodMenu';
+import SubCategory from './src/components/SubCategory';
+import FoodMenuList from './src/components/FoodMenuList';
 
 export default class App extends Component {
   state = { loggedIn: true };
@@ -46,6 +49,9 @@ export default class App extends Component {
             </Tabs>
             <Scene key="programmeSchedule" title="Programme Schedule"  component={ProgrammeSchedule} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
             <Scene key="parking" title="Parking"  component={Parking} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
+            <Scene key="foodmenu" title="Food Menu"  component={FoodMenu} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
+            <Scene key="subcategory" title="Sub Category"  component={SubCategory} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
+            <Scene key="foodlist" title="Food Menu List"  component={FoodMenuList} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
           </Scene>    
         </Router>
       );
