@@ -15,7 +15,7 @@ const HomeScreen = () => {
  const { container, ListStyle, IconStyle, textStyle } = styles;
 
  openAbout = ()=>{
-    alert('About');
+    Actions.about();
  };
  openMap = ()=>{
     Actions.map();

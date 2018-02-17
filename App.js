@@ -12,6 +12,7 @@ import Parking from './src/components/Parking';
 import FoodMenu from './src/components/FoodMenu';
 import SubCategory from './src/components/SubCategory';
 import FoodMenuList from './src/components/FoodMenuList';
+import AboutPage from './src/components/AboutPage';
 
 export default class App extends Component {
   state = { loggedIn: true };
@@ -52,6 +53,7 @@ export default class App extends Component {
             <Scene key="foodmenu" title="Food Menu"  component={FoodMenu} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
             <Scene key="subcategory" title="Sub Category"  component={SubCategory} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
             <Scene key="foodlist" title="Food Menu List"  component={FoodMenuList} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
+            <Scene key="about" title="About"  component={AboutPage} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
           </Scene>    
         </Router>
       );
