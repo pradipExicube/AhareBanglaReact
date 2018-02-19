@@ -18,7 +18,7 @@ const FoodMenu = () => {
     }
   return (
     <View
-    style={styles.containerStyle}>
+        style={styles.containerStyle}>
 
         <View style= {{marginTop: 3, width: width}}>
             <TouchableWithoutFeedback onPress={this.goSubCategory}>

@@ -24,7 +24,7 @@ const HomeScreen = () => {
     Actions.restaurant();
  };
  openSearch = ()=>{
-    alert('Search');
+    Actions.search();
  };
  openNews = ()=>{
     Actions.news();
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     flexDirection:'row',
     alignItems:'center', 
     borderBottomColor:'#005696', 
-    borderBottomWidth:0.3
+    borderBottomWidth:0.3,
   },
   IconStyle: {
     width: 50,

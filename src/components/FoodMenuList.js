@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import StarRating from 'react-native-star-rating';
+import { Actions } from 'react-native-router-flux';
 
 var {width,height} = Dimensions.get('window');
 
@@ -44,7 +45,7 @@ onStarRatingPress(rating) {
                             marginTop: 10,
                             marginLeft: 20, 
                             marginBottom: 5}}
-                        onPress={() => alert('comment')} 
+                        onPress={() => {Actions.comment()}} 
                     />
                         <View style={{
                             marginTop: 10, 

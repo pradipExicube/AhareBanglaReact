@@ -13,6 +13,8 @@ import FoodMenu from './src/components/FoodMenu';
 import SubCategory from './src/components/SubCategory';
 import FoodMenuList from './src/components/FoodMenuList';
 import AboutPage from './src/components/AboutPage';
+import SearchPage from './src/components/SearchPage';
+import CommentPage from './src/components/CommentPage';
 
 export default class App extends Component {
   state = { loggedIn: true };
@@ -54,6 +56,8 @@ export default class App extends Component {
             <Scene key="subcategory" title="Sub Category"  component={SubCategory} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
             <Scene key="foodlist" title="Food Menu List"  component={FoodMenuList} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
             <Scene key="about" title="About"  component={AboutPage} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
+            <Scene key="search" title="Search"  component={SearchPage} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
+            <Scene key="comment" title="Comment"  component={CommentPage} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
           </Scene>    
         </Router>
       );
