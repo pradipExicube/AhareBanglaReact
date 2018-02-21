@@ -13,18 +13,31 @@ import CardSection from './common/CardSection';
 import StarRating from 'react-native-star-rating';
 import { Icon } from 'react-native-elements'
 import { Actions } from 'react-native-router-flux';
+import * as firebase from 'firebase';
 
 var {width,height} = Dimensions.get('window');
 
 export default class RestaurantScreen extends Component {
   constructor(props) {
     super(props);
+    console.log('restaurent_start');
     this.state = {
-      starCount: 3.5
+      starCount: 3.5,
+      restaurantData: []
     };
   }
-  goFoodmenu() {
-    Actions.foodmenu();
+  componentWillMount(){
+    let ref = firebase.database().ref('rastaurants');
+    ref.on('value',(snap)=>{
+      if(snap.val()){
+        this.setState({restaurantData: snap.val()})
+      }
+    })
+    console.log('restaurent_end')
+  }
+  goFoodmenu(data,key) {
+    // console.log(key);
+    Actions.foodmenu({data: data,id: key});
   }
       
   onStarRatingPress(rating) {
@@ -35,28 +48,38 @@ export default class RestaurantScreen extends Component {
   render() {
     return (
       <ScrollView style={{width: width, height: height-135}}>
-        <Card>
+
+
+      {
+                this.state.restaurantData ? 
+                this.state.restaurantData.map((restaurants,key)=>{
+                  console.log('restaurantData');
+                  console.log(restaurants.restaurants_name);
+           
+              return(
+      
+        <Card key={key}>
           <CardSection>
-            <TouchableWithoutFeedback onPress={this.goFoodmenu}>
+            <TouchableWithoutFeedback onPress={()=>{this.goFoodmenu(restaurants,key)}}>
               <Image
                   style={styles.IconStyle}
-                  source={require('../assets/images/wowmomo.png')}
+                  source={{uri: restaurants.logo}}
               />
             </TouchableWithoutFeedback>
             <View style={{ marginTop: 10, marginLeft: 10, }}>
-              <TouchableWithoutFeedback onPress={this.goFoodmenu}>
+              <TouchableWithoutFeedback onPress={()=>{this.goFoodmenu(restaurants,key)}}>
                 <View>
-                  <Text style={{ color: '#005696' }}>KAVIAR</Text>
+                  <Text style={{ color: '#005696', marginRight: 12 }}>{restaurants.restaurants_name}</Text>
                 </View>
               </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback onPress={this.goFoodmenu}>
+              <TouchableWithoutFeedback onPress={()=>{this.goFoodmenu(restaurants,key)}}>
                 <View>
-                  <Text style={{ color: '#012f51', marginTop: 12 }}>Hanger A</Text>
+                  <Text style={{ color: '#012f51', marginTop: 12 }}>{restaurants.positions}</Text>
                 </View>
                 </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback onPress={this.goFoodmenu}>
+              <TouchableWithoutFeedback onPress={()=>{this.goFoodmenu(restaurants,key)}}>
                 <View>  
-                  <Text style={{ color: '#b1b1b1', marginTop: 12 }}>Stall No: 43</Text>
+                  <Text style={{ color: '#b1b1b1', marginTop: 12 }}>{restaurants.stall_no}</Text>
                 </View>
               </TouchableWithoutFeedback>
               <View style={{ flexDirection: 'row' }}>
@@ -90,6 +113,11 @@ export default class RestaurantScreen extends Component {
             </View>
           </CardSection>
         </Card>
+
+              )
+            })
+              : null
+            }
       </ScrollView>
     );
   }

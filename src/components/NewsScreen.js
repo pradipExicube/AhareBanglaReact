@@ -6,30 +6,51 @@ import {
   Image,
   Dimensions,
   TouchableWithoutFeedback,
-  ScrollView
+  ScrollView,
+  Linking
 } from 'react-native';
 import Card from './common/Card';
 import CardSection from './common/CardSection';
-import { Icon } from 'react-native-elements'
+import { Icon } from 'react-native-elements';
+import * as firebase from 'firebase';
 
 var {width,height} = Dimensions.get('window');
 
-const NewsScreen = () => {
-  return (
-    <ScrollView style={{width: width, height: height-135}}>
-      <Card>
-        <TouchableWithoutFeedback onPress={()=>{alert('news')}}>
+export default class NewsScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      newsData:[]
+    }
+    
+  }
+  componentWillMount(){
+    let ref = firebase.database().ref('news');
+    ref.on('value',(snap)=>{
+      if(snap.val()){
+        this.setState({newsData:snap.val()})
+      }
+    })
+  }
+/*  
+renderNewsData() {
+    this.state.newsData.map((news,key)=>{
+      console.log('newsData');
+      console.log(news);
+    return(
+      <Card key={key}>
+        <TouchableWithoutFeedback onPress={()=>{Linking.openURL(news.url)}}>
           <View style={{ margin: 10 }}>
             <Image
               style={styles.ImageStyle}
-              source={{uri: "https://firebasestorage.googleapis.com/v0/b/aharebangla-6f646.appspot.com/o/news%2F24291743_527694724251078_6035855101019475304_o.jpg?alt=media&token=0b4b0ab1-c1a6-4288-a4b3-3606761d661a"}}
+              source={{uri: "{news.img}"}}
             />
           </View>
         </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback onPress={()=>{alert('news')}}>
+        <TouchableWithoutFeedback onPress={()=>{Linking.openURL(news.url)}}>
           <View style={styles.textStyle}>
-            <Text style={styles.newsHeading}>Aahare Bangla - 2017 Openning</Text>
-            <Text style={styles.newsContent}>An Innovative venture by Government of West Bengal in the form of a Fabulous Food Festival.</Text>
+            <Text style={styles.newsHeading}>{news.head}</Text>
+            <Text style={styles.newsContent}>{news.desc}</Text>
           </View>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback onPress={()=>{alert('sharebutton')}}>
@@ -39,16 +60,94 @@ const NewsScreen = () => {
               type='ionicon'
               color='#005696'
               size= {20}
-              containerStyle = {{ marginLeft: 17, marginBottom: 10, marginRight: 6 }}
+              containerStyle = {{ 
+                marginLeft: 17, 
+                marginBottom: 10, 
+                marginRight: 6 
+              }}
               onPress={() => alert('share')} 
             />
-            <Text style={[styles.newsHeading,{ marginRight: 10, marginBottom: 10, fontWeight: 'bold' }]}>SHARE</Text>
+            <Text style={
+              [styles.newsHeading,
+                { 
+              marginRight: 10, 
+              marginBottom: 10, 
+              fontWeight: 'bold' 
+              }]}
+            >
+              SHARE</Text>
           </View>
         </TouchableWithoutFeedback>
       </Card>
-    </ScrollView>
+    )
 
-  );
+    })
+  // }
+  }
+  */
+  render() {
+    return (
+      <ScrollView style={{width: width, height: height-135}}>
+
+      {
+        this.state.newsData ? 
+        this.state.newsData.map((news,key)=>{
+          // console.log('newsData');
+          // console.log(news.desc);
+   
+      return(
+        <Card key={key}>
+          <TouchableWithoutFeedback onPress={()=>{Linking.openURL(news.url)}}>
+            <View style={{ margin: 10 }}>
+              <Image
+                style={styles.ImageStyle}
+                source={{uri: news.img}}
+              />
+            </View>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={()=>{Linking.openURL(news.url)}}>
+            <View style={styles.textStyle}>
+              <Text style={styles.newsHeading}>{news.head}</Text>
+              <Text style={styles.newsContent}>{news.desc}</Text>
+            </View>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={()=>{alert('sharebutton')}}>
+            <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+              <Icon
+                name='md-share'
+                type='ionicon'
+                color='#005696'
+                size= {20}
+                containerStyle = {{ 
+                  marginLeft: 17, 
+                  marginBottom: 10, 
+                  marginRight: 6 
+                }}
+                onPress={() => alert('share')} 
+              />
+              <Text style={
+                [styles.newsHeading,
+                  { 
+                marginRight: 10, 
+                marginBottom: 10, 
+                fontWeight: 'bold' 
+                }]}
+              >
+                SHARE
+              </Text>
+            </View>
+          </TouchableWithoutFeedback>
+        </Card>
+      )
+    })
+
+    : null
+
+  }
+      </ScrollView>
+
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -71,5 +170,3 @@ const styles = StyleSheet.create({
     fontSize: 16,
   }
 });
-
-export default NewsScreen;

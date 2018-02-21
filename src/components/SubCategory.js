@@ -12,47 +12,58 @@ import Card from './common/Card';
 import { Icon } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 var {width,height} = Dimensions.get('window');
-const SubCategory = () => {
+export default class SubCategory extends Component {
+    constructor(props) {
+        super(props);
+        
+    }
+    componentWillMount() {
+        console.log(this.props.res_id);
+        console.log(this.props.data);
+        console.log(this.props.id);
+    }
 
-    goFoodList = () => {
+    goFoodList() {
         Actions.foodlist();
     }
-    
-    return (
-    <View
-    style={styles.containerStyle}>
+    render() {
+        return (
+            <View
+            style={styles.containerStyle}>
 
-        <View style= {{marginTop: 3, width: width}}>
-            <TouchableWithoutFeedback onPress={this.goFoodList}>
-                <View>
-                
-                    <Image
-                        style={styles.cardImage}
-                        source={{uri: "https://firebasestorage.googleapis.com/v0/b/aharebangla-6f646.appspot.com/o/food%20menu%2FupdatedMenu%2Ffoodmenunew.jpg?alt=media&token=13c9b2e7-c0cf-487a-86ca-00673997e377"}}
-                    />
+                <View style= {{marginTop: 3, width: width}}>
+                    <TouchableWithoutFeedback onPress={this.goFoodList}>
+                        <View>
+                        
+                            <Image
+                                style={styles.cardImage}
+                                source={{uri: "https://firebasestorage.googleapis.com/v0/b/aharebangla-6f646.appspot.com/o/food%20menu%2FupdatedMenu%2Ffoodmenunew.jpg?alt=media&token=13c9b2e7-c0cf-487a-86ca-00673997e377"}}
+                            />
 
-                    <View style={styles.cardTextContainer}>
-                        <Text style={styles.textStyle}>Food Menu</Text>
-                        <Icon
-                            name='md-arrow-dropright-circle'
-                            type='ionicon'
-                            color='#a3d2f5'
-                            size= {30}
-                            containerStyle = {{ margin: 5,
-                            }}
-                        />
-                    </View>
+                            <View style={styles.cardTextContainer}>
+                                <Text style={styles.textStyle}>{this.props.data.name}</Text>
+                                <Icon
+                                    name='md-arrow-dropright-circle'
+                                    type='ionicon'
+                                    color='#a3d2f5'
+                                    size= {30}
+                                    containerStyle = {{ 
+                                        margin: 5,
+                                    }}
+                                />
+                            </View>
 
+                        </View>
+                    </TouchableWithoutFeedback>
                 </View>
-            </TouchableWithoutFeedback>
-        </View>
 
-        <Image
-            style={styles.backgroundImage}
-            source={require('../assets/images/innerPlate2.png')}
-        />  
-    </View>
-  );
+                <Image
+                    style={styles.backgroundImage}
+                    source={require('../assets/images/innerPlate2.png')}
+                />  
+            </View>
+        );
+    }
 }
 
 const styles = StyleSheet.create({
@@ -89,5 +100,3 @@ const styles = StyleSheet.create({
         top: 80 
     }
 });
-
-export default SubCategory;
