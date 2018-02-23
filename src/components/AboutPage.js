@@ -7,8 +7,24 @@ import {
   Image,
   ScrollView
 } from 'react-native';
+import * as firebase from 'firebase';
 var {width,height} = Dimensions.get('window');
 export default class AboutPage extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            aboutData: []
+          }
+          let ref= firebase.database().ref('about');
+          console.log("about page")
+          ref.once('value',(snapshot)=>{
+            if(snapshot.val()){
+                this.setState({aboutData: snapshot.val()});
+              console.log(this.state.aboutData);
+            }
+          })
+    }
+
  render() {
         return (
             <ScrollView style={{
@@ -21,7 +37,12 @@ export default class AboutPage extends Component {
                     contentContainerStyle={{
                     justifyContent: 'center',
                     alignItems:'center',}}>
+            {/* {
+                this.state.aboutData ? 
+            // this.state.aboutData.map((about,key)=>{
+            return ( */}
 
+            <View>
                     <Image
                         style={{
                             width: 160 ,
@@ -29,10 +50,14 @@ export default class AboutPage extends Component {
                             borderRadius: 80,
                             borderWidth: 5,
                             borderColor: '#005696',
-                            top: 20
+                            top: 20,
+                            alignSelf: 'center'
                         }}
-                        source={require('../assets/images/aboutImg.jpg')}
+                        source={{uri: this.state.aboutData.image}}
                         />
+                 
+            
+              
                     <View style={{marginTop: 30}}>
                         <Text style={{
                             color: '#005696',
@@ -40,7 +65,7 @@ export default class AboutPage extends Component {
                             fontWeight: 'bold',  
                             // marginTop: 10,
                             textAlign: 'center'
-                            }}>AHARE BANGLA
+                            }}>{this.state.aboutData.heading}
                         </Text>
                         <Text style={{
                             color: '#236ca3',
@@ -49,17 +74,21 @@ export default class AboutPage extends Component {
                             marginTop: 15,
                             textAlign: 'center',
                             lineHeight: 20
-                        }}>- An Innovative venture by Government of West Bengal in the form of a Fabulous Food Festival.
-                        </Text>
+                        }}>{this.state.aboutData.subheading}</Text>
                         <Text style={{
                             color: '#012f51',
                             fontSize: 14,
                             margin: 15,
                             textAlign: 'justify',
                             lineHeight: 25
-                        }}>Once again, it's a noble albeit a novel venture by the Government of West Bengal to serve the people with age-old as well as modern delicacies of Bengal-food with an aim to create awareness about the irresistible taste and the convenient source of the food products along with the promotion of the food industry in the state. This pro-people endeavor would also boost up the production and sale of the raw ingredients of the food products resulting in an enhanced remuneration to the farming community of Bengal. 
-                        </Text>
+                        }}>{this.state.aboutData.description}</Text>
                 </View>
+              </View>
+
+            {/* )
+            // })
+            : null
+            } */}
             </ScrollView>
         );
     }

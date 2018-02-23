@@ -103,7 +103,7 @@ const HomeScreen = () => {
                     style={IconStyle}
                     source={require('../assets/images/homeListIcon7.png')}
                     />
-                    <Text style={textStyle}>Program Schedule</Text>
+                    <Text style={textStyle}>Programme Schedule</Text>
                 </View>
             </TouchableOpacity>
         </ScrollView>

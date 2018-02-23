@@ -115,7 +115,7 @@ export default class RestaurantScreen extends Component {
                   color='#005696'
                   size= {28}
                   containerStyle = {{marginLeft: 35, marginTop: 8}}
-                  onPress={() => Actions.comment()} 
+                  onPress={() => Actions.comment({data: restaurants, id: key, Ttype: 'res'})} 
                 />
                 <Icon
                   name='md-share'

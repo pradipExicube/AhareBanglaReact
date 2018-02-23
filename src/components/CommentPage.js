@@ -9,6 +9,7 @@ import {
   TextInput,
   Button
 } from 'react-native';
+import * as firebase from 'firebase';
 
 var {width,height} = Dimensions.get('window');
 
@@ -16,20 +17,61 @@ export default class CommentPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            text: ''
+            text: '',
+            comments: []
         };
+        console.log(this.props.id);
+        // if(this.props.Ttype == "res"){
+        //     this.showRestaurantComments(); 
+        //  }
     }
+    componentWillMount(){
+        var allDataa=[];
+        var reff = firebase.database().ref('rastaurants/' + this.props.id +'/comments/' );  
+        reff.on('value',(snapshot)=>{
+            console.log('snapshot');
+            console.log(snapshot.val());
+            var cData = snapshot.val();
+
+           try {
+                for(let key in cData){
+                    cData[key].commentUid = key;
+                    allDataa.push(cData[key]);
+                }
+                console.log(allDataa)
+           //this.setState({comments:allDataa});
+                this.setState({comments: allDataa},
+                    ()=> {console.log('callback......');
+                        console.log(this.state.comments)
+                    console.log('callback end')
+                    });
+            }
+            catch(e){
+                console.log("error : " + e);
+            }
+
+            console.log("checking data");
+            console.log(this.state.comments)
+        });
+    }
+
     render() {
         return (
             <View style={{height: height-80, 
             flexDirection: 'column', 
             justifyContent: 'space-between'
             }}>
-                <ScrollView>
+            <ScrollView>
+            {
+                this.state.comments ? 
+                this.state.comments.map((comment,key)=>{
+                    return (
+
+                
                     <View style={styles.ListStyle}>
                         <Image
                         style={styles.ImageStyle}
-                        source={require('../assets/images/homeListIcon1.png')}
+                        source={{uri: comment.image}}
                         />
                         <View style={{
                             flex: 1,
@@ -42,13 +84,19 @@ export default class CommentPage extends Component {
                                 marginBottom: 5,
                                 marginTop: 15
                             }}>
-                                Arghyadeep Sinha
+                                {comment.name}
                             </Text> 
                             <Text style={styles.textStyle}>
-                                That is Amazing Food.That is Amazing Food.That is Amazing Food.That is Amazing Food.That is Amazing Food.
+                                {comment.messege}
                             </Text>
                         </View> 
                     </View>
+                
+
+                )
+                })
+                : null
+                }
                 </ScrollView>
                 <View style={{flexDirection: 'row',marginLeft: 10}}>
                     <TextInput
@@ -81,6 +129,7 @@ const styles = StyleSheet.create({
       ImageStyle: {
         width: 50,
         height: 50, 
+        borderRadius: 25,
         marginLeft:15, 
         marginRight:10, 
         marginTop:10, 
