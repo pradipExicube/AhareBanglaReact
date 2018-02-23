@@ -19,7 +19,7 @@ export default class FoodMenu extends Component {
     constructor(props) {
         super(props);
         // console.log(this.props.data)
-        console.log(this.props.data.restaurants_name);
+        // console.log(this.props.data.restaurants_name);
         console.log(this.props.id);
         this.state = {
             notfoundimage: "https://firebasestorage.googleapis.com/v0/b/aharebangla-6f646.appspot.com/o/nanMenu.png?alt=media&token=764f9fe8-b2f8-4c82-858e-6e01cab1e8c3",

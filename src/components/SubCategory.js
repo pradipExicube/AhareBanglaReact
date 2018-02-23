@@ -14,34 +14,38 @@ import { Actions } from 'react-native-router-flux';
 var {width,height} = Dimensions.get('window');
 export default class SubCategory extends Component {
     constructor(props) {
-        super(props);
-        
+        super(props);       
     }
-    componentWillMount() {
-        console.log(this.props.res_id);
-        console.log(this.props.data);
-        console.log(this.props.id);
-    }
+    // componentWillMount() {
+    //     console.log(this.props.res_id);
+    //     console.log(this.props.data);
+    //     console.log(this.props.id);
+    // }
 
-    goFoodList() {
-        Actions.foodlist();
+    goFoodList(data,key) {
+        Actions.foodlist({data: data, id: key});
     }
     render() {
         return (
-            <View
-            style={styles.containerStyle}>
+            <ScrollView style={{ height:(height-100), width: width }}>
+            {      
+                    this.props.data.subcategory ? 
+                    this.props.data.subcategory.map((subcat,key)=>{
+                      // console.log('newsData');
+                      // console.log(news.desc);             
+                  return(
 
-                <View style= {{marginTop: 3, width: width}}>
-                    <TouchableWithoutFeedback onPress={this.goFoodList}>
+                <View key={key} style= {{marginTop: 3, width: width}}>
+                    <TouchableWithoutFeedback onPress={()=>{this.goFoodList(subcat,key)}}>
                         <View>
                         
                             <Image
                                 style={styles.cardImage}
-                                source={{uri: "https://firebasestorage.googleapis.com/v0/b/aharebangla-6f646.appspot.com/o/food%20menu%2FupdatedMenu%2Ffoodmenunew.jpg?alt=media&token=13c9b2e7-c0cf-487a-86ca-00673997e377"}}
+                                source={{uri: subcat.img}}
                             />
 
                             <View style={styles.cardTextContainer}>
-                                <Text style={styles.textStyle}>{this.props.data.name}</Text>
+                                <Text style={styles.textStyle}>{subcat.name}</Text>
                                 <Icon
                                     name='md-arrow-dropright-circle'
                                     type='ionicon'
@@ -56,12 +60,16 @@ export default class SubCategory extends Component {
                         </View>
                     </TouchableWithoutFeedback>
                 </View>
+                )
+            })
+                : null
+            }
 
                 <Image
                     style={styles.backgroundImage}
                     source={require('../assets/images/innerPlate2.png')}
                 />  
-            </View>
+            </ScrollView>
         );
     }
 }

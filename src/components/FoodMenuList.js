@@ -18,7 +18,7 @@ export default class FoodMenuList extends Component {
 constructor(props) {
  super(props);
     this.state = {
-        starCount: 3.5
+        starCount: 3.5,
     };
 }
 
@@ -31,10 +31,24 @@ onStarRatingPress(rating) {
  render() {
     return (
         <ScrollView style={{ height:(height-100), width: width }}>
-            <View style={styles.ListStyle}>
-                <View style={{flexDirection:'column'}}>
-                    <Text style={styles.foodMenuHeader}>Food Menu List</Text> 
-                    <Text style={styles.foodMenuQuantity}>500 Gm</Text>
+
+{
+         
+        this.props.data.menu ? 
+        this.props.data.menu.map((foodlist,key)=>{
+          // console.log('newsData');
+          // console.log(news.desc);             
+      return(
+
+            <View key={key} style={styles.ListStyle}>
+                <View style={{flexDirection:'column', width: width}}>
+                    <Text style={styles.foodMenuHeader}>{foodlist.name}</Text>
+                    <View style={{flexDirection: 'row',justifyContent:'space-between'}}> 
+                        <Text style={styles.foodMenuQuantity}>{foodlist.description}</Text>
+                    <View style={{marginRight: 10}}>
+                        <Text style={styles.foodMenuRate}>₹{foodlist.rate}</Text>
+                    </View>
+                    </View>
                     <View style={{flexDirection: 'row'}}>
                     <Icon
                         name='md-chatbubbles'
@@ -64,10 +78,14 @@ onStarRatingPress(rating) {
                         </View>
                     </View>
                 </View>
-                <View style={{marginRight: 10}}>
-                    <Text style={styles.foodMenuRate}>₹100</Text>
-                </View>
+                {/* <View style={{marginRight: 10}}>
+                    <Text style={styles.foodMenuRate}>₹{foodlist.rate}</Text>
+                </View> */}
             </View>
+            )
+        })
+            : null
+        }
         </ScrollView>
         );      
     }

@@ -23,17 +23,33 @@ export default class RestaurantScreen extends Component {
     console.log('restaurent_start');
     this.state = {
       starCount: 3.5,
-      restaurantData: []
+      restaurantData: [],
+      notFound: false
     };
   }
-  componentWillMount(){
-    let ref = firebase.database().ref('rastaurants');
-    ref.on('value',(snap)=>{
-      if(snap.val()){
-        this.setState({restaurantData: snap.val()})
+  componentWillMount() {
+    // console.log(this.props.restaurantType);
+    if(this.props.restaurantType){
+      let data = this.props.data;
+      // console.log(data);
+      if(data){
+        this.setState({restaurantData: data, notFound: false});
+      }else{
+        console.log('not found');
+        this.setState({notFound: true});
       }
-    })
-    console.log('restaurent_end')
+    }else{
+      console.log('firebase');
+      let ref = firebase.database().ref('rastaurants');
+      ref.on('value',(snap)=>{
+        if(snap.val()){
+          this.setState({restaurantData: snap.val()})
+        }
+      })
+      console.log('restaurent_end');
+      this.render();
+    }
+    
   }
   goFoodmenu(data,key) {
     // console.log(key);
@@ -68,7 +84,7 @@ export default class RestaurantScreen extends Component {
             </TouchableWithoutFeedback>
             <View style={{ marginTop: 10, marginLeft: 10, }}>
               <TouchableWithoutFeedback onPress={()=>{this.goFoodmenu(restaurants,key)}}>
-                <View>
+                <View style={{ width: width-150  }}>
                   <Text style={{ color: '#005696', marginRight: 12 }}>{restaurants.restaurants_name}</Text>
                 </View>
               </TouchableWithoutFeedback>
@@ -79,7 +95,7 @@ export default class RestaurantScreen extends Component {
                 </TouchableWithoutFeedback>
               <TouchableWithoutFeedback onPress={()=>{this.goFoodmenu(restaurants,key)}}>
                 <View>  
-                  <Text style={{ color: '#b1b1b1', marginTop: 12 }}>{restaurants.stall_no}</Text>
+                  <Text style={{ color: '#b1b1b1', marginTop: 12 }}>Stall No: {restaurants.stall_no}</Text>
                 </View>
               </TouchableWithoutFeedback>
               <View style={{ flexDirection: 'row' }}>
@@ -90,7 +106,7 @@ export default class RestaurantScreen extends Component {
                   selectedStar={(rating) => this.onStarRatingPress(rating)}
                   starColor= '#ddc600'
                   starSize= {18}
-                  starStyle= {{ marginTop: 18, margin: 2 }}
+                  starStyle= {{ marginTop: 16, margin: 2 }}
                   emptyStarColor= '#ddc600'
                 />
                 <Icon
@@ -98,7 +114,7 @@ export default class RestaurantScreen extends Component {
                   type='ionicon'
                   color='#005696'
                   size= {28}
-                  containerStyle = {{marginLeft: 35, marginTop: 10}}
+                  containerStyle = {{marginLeft: 35, marginTop: 8}}
                   onPress={() => Actions.comment()} 
                 />
                 <Icon
@@ -106,7 +122,7 @@ export default class RestaurantScreen extends Component {
                   type='ionicon'
                   color='#005696'
                   size= {28}
-                  containerStyle = {{marginLeft: 17, marginTop: 10}}
+                  containerStyle = {{marginLeft: 17, marginTop: 8}}
                   onPress={() => alert('share')} 
                 />
               </View>
