@@ -59,7 +59,14 @@ onStarRatingPress(rating) {
                             marginTop: 10,
                             marginLeft: 20, 
                             marginBottom: 5}}
-                        onPress={() => {Actions.comment()}} 
+                        onPress={() => {Actions.comment({
+                            foodlistdata: foodlist.comments,
+                            foodlistid: key, 
+                            Ttype: 'foodlist', 
+                            cat_id: this.props.cat_id, 
+                            subcat_id: this.props.id,
+                            res_id: this.props.res_id
+                            })}} 
                     />
                         <View style={{
                             marginTop: 10, 
@@ -70,7 +77,7 @@ onStarRatingPress(rating) {
                                 maxStars={5}
                                 rating={this.state.starCount}
                                 selectedStar={(rating) => this.onStarRatingPress(rating)}
-                                starColor= '#ffb400'
+                                fullStarColor = {'#ffb400'}
                                 starSize= {26}
                                 starStyle= {{ margin: 4 }}
                                 emptyStarColor= '#ffb400'

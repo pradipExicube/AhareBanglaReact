@@ -23,7 +23,7 @@ export default class SubCategory extends Component {
     // }
 
     goFoodList(data,key) {
-        Actions.foodlist({data: data, id: key});
+        Actions.foodlist({data: data, id: key, cat_id: this.props.id, res_id: this.props.res_id});
     }
     render() {
         return (

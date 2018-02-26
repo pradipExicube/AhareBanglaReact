@@ -6,7 +6,9 @@ import {
   Image,
   TouchableWithoutFeedback,
   ScrollView,
-  Dimensions
+  Dimensions,
+  Modal,
+  Button
 } from 'react-native';
 import Card from './common/Card';
 import CardSection from './common/CardSection';
@@ -24,7 +26,8 @@ export default class RestaurantScreen extends Component {
     this.state = {
       starCount: 3.5,
       restaurantData: [],
-      notFound: false
+      notFound: false,
+      // modalVisible: false,
     };
   }
   componentWillMount() {
@@ -58,9 +61,22 @@ export default class RestaurantScreen extends Component {
       
   onStarRatingPress(rating) {
     this.setState({
+      // modalVisible:true,
       starCount: rating
     });
   }
+
+  // openModal() {
+  //   this.setState({modalVisible:true});
+  // }
+
+  // closeModal() {
+  //   this.setState({modalVisible:false});
+  // }
+
+
+
+
   render() {
     return (
       <ScrollView style={{width: width, height: height-135}}>
@@ -99,16 +115,37 @@ export default class RestaurantScreen extends Component {
                 </View>
               </TouchableWithoutFeedback>
               <View style={{ flexDirection: 'row' }}>
+                {/* <Modal
+                      visible={this.state.modalVisible}
+                      // animationType={'slide'}
+                      transparent={true}
+                      onRequestClose={() => this.closeModal()}
+                    >
+                      <View style={styles.modalContainer}>
+                        <View style={styles.innerContainer}>
+                          <Text>This is content inside of modal component</Text>
+                          <Button
+                              // onPress={() => this.closeModal()}
+                              title="Close modal"
+                          >
+                          </Button>
+                        </View>
+                      </View>
+                    </Modal> */}
                 <StarRating
                   disabled={false}
                   maxStars={5}
                   rating={this.state.starCount}
-                  selectedStar={(rating) => this.onStarRatingPress(rating)}
-                  starColor= '#ddc600'
+                  selectedStar={
+                    // () => {this.openModal()}
+                    (rating) => this.onStarRatingPress(rating)
+                  }
+                  fullStarColor = {'#ddc600'}
                   starSize= {18}
                   starStyle= {{ marginTop: 16, margin: 2 }}
                   emptyStarColor= '#ddc600'
                 />
+                  
                 <Icon
                   name='md-chatbubbles'
                   type='ionicon'
@@ -153,6 +190,14 @@ const styles = StyleSheet.create({
     marginRight:10, 
     marginTop:25, 
     marginBottom:25 
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'grey',
+  },
+  innerContainer: {
+    alignItems: 'center',
   },
 });
 

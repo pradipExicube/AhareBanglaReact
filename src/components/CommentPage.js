@@ -17,15 +17,38 @@ export default class CommentPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            text: '',
-            comments: []
+            newComment: '',
+            comments: [],
+            user_id: '',
+            fullname: '',
+            c_image: ''
         };
         console.log(this.props.id);
-        // if(this.props.Ttype == "res"){
-        //     this.showRestaurantComments(); 
-        //  }
     }
     componentWillMount(){
+        this.setState({comments: [], newComment: ''});
+        this.setState({user_id : firebase.auth().currentUser.uid},()=>{console.log(this.state.user_id)});
+        var ref = firebase.database().ref('/users/' + (firebase.auth().currentUser.uid) + '/');
+        ref.on('value', (_snapshot) => {
+            console.log(_snapshot.val())
+          if(_snapshot.val()){
+            if(_snapshot.val().username){
+              this.setState({fullname : _snapshot.val().username});
+            }else{
+                this.setState({fullname : " "}); ;
+            }
+            if(_snapshot.val().userimage){
+                this.setState({c_image : _snapshot.val().userimage});  
+            }else{
+              this.setState({c_image : " "});
+            }
+          }
+          })
+
+
+
+
+        if(this.props.Ttype == "res") {
         var allDataa=[];
         var reff = firebase.database().ref('rastaurants/' + this.props.id +'/comments/' );  
         reff.on('value',(snapshot)=>{
@@ -53,7 +76,50 @@ export default class CommentPage extends Component {
             console.log("checking data");
             console.log(this.state.comments)
         });
+        }
+        else{
+            console.log('foodlist..............')
+            let itemRef = firebase.database().ref('rastaurants/' + this.props.res_id + "/category/" + this.props.cat_id + "/subcategory/" + this.props.subcat_id + "/menu/" + this.props.foodlistid + "/comments/");
+                var foodcomment = [];
+                itemRef.on("value",(snapshot)=>{
+                    console.log(snapshot.val())
+                var fcData = snapshot.val();
+                try {
+                    for(let key in fcData){
+                        fcData[key].commentUid = key;
+                        foodcomment.push(fcData[key]);
+                    }
+                console.log(foodcomment)
+                this.setState({comments: foodcomment},
+                    ()=> {console.log('callback......');
+                        console.log(this.state.comments)
+                    console.log('callback end')
+                    });
+            }
+            catch(e){
+                console.log("error : " + e);
+            }
+            });
+        }
     }
+
+    sendMessage() {
+        if(this.props.Ttype == "res") {
+          firebase.database().ref("rastaurants/" + this.props.id + "/comments/").push({messege:this.state.newComment,name:this.state.fullname,image:this.state.c_image,user_id:(firebase.auth().currentUser.uid)});
+          this.setState({newComment: ""});
+        }
+        else{
+            console.log(this.props.res_id);
+            console.log(this.props.cat_id);
+            console.log(this.props.subcat_id);
+            console.log(this.props.foodlistid);
+            console.log('props end............')
+            firebase.database().ref('rastaurants/' + this.props.res_id + "/category/" + this.props.cat_id + "/subcategory/" + this.props.subcat_id + "/menu/" + this.props.foodlistid + "/comments/").push({messege:this.state.newComment,name:this.state.fullname,image:this.state.c_image,user_id:(firebase.auth().currentUser.uid)});
+            this.setState({newComment: ""});
+        }
+        // this.setState({comments: [], newComment: ''});
+        // Actions.refresh();
+      }
 
     render() {
         return (
@@ -65,10 +131,8 @@ export default class CommentPage extends Component {
             {
                 this.state.comments ? 
                 this.state.comments.map((comment,key)=>{
-                    return (
-
-                
-                    <View style={styles.ListStyle}>
+                    return (             
+                    <View key={key} style={styles.ListStyle}>
                         <Image
                         style={styles.ImageStyle}
                         source={{uri: comment.image}}
@@ -104,11 +168,11 @@ export default class CommentPage extends Component {
                         placeholder="Add a Message..."
                         underlineColorAndroid='transparent'
                         placeholderTextColor='#000'
-                        onChangeText={(text) => this.setState({text})}
+                        onChangeText={(text) => this.setState({newComment: text})}
                     />
                     <View style={{width: 68, alignSelf:'flex-end'}}>
                         <Button
-                            onPress={()=>{alert('Add Message')}}
+                            onPress={()=>{this.sendMessage();}}
                             title="Submit"
                             color="#012f51"
                         />
