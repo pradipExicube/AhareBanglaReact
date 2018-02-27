@@ -5,15 +5,36 @@ import {
   View,
   Text,
   Dimensions,
-  Button,
   StyleSheet,
   TouchableOpacity,
-  Alert
+  Alert,
+  Modal,
+  TextInput
 } from 'react-native';
 import { Facebook, Google } from 'expo';
 import firebase from 'firebase';
+import { Button } from 'react-native-elements'
+
 var {width,height} = Dimensions.get('window');
 export default class LoginPage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      modalVisible: false,
+      staffEmail: '',
+      staffPass: ''
+    }
+  }
+
+  openModal() {
+    this.setState({
+        modalVisible:true,
+    });
+  }
+  closeModal() {
+    this.setState({modalVisible:false});
+  }
+
     FBlogIn = async () => {
       try{
           const { type, token } = await Facebook.logInWithReadPermissionsAsync('391312557981050', {
@@ -95,6 +116,17 @@ export default class LoginPage extends Component {
           return {error: true};
         }
       }
+
+    async staffLogin() {
+      // loginWithStaff(email, password)
+        await firebase.auth().signInWithEmailAndPassword(this.state.staffEmail, this.state.staffPass).then((authenticatedUser) => {
+          firebase.database().ref('users').child(authenticatedUser.uid + '/logintype/').set("basic");	
+          firebase.database().ref('users').child(authenticatedUser.uid + '/usertype/').set("staff");	
+          firebase.database().ref('users').child(authenticatedUser.uid + '/userimage/').set('https://firebasestorage.googleapis.com/v0/b/aharebangla-6f646.appspot.com/o/default_user%2Fuser.png?alt=media&token=fd2a04a7-8839-43b4-916e-b4bca9a4106e')
+        })
+      this.setState({modalVisible: false})
+    
+      }
  
   render() {
     return (
@@ -153,7 +185,7 @@ export default class LoginPage extends Component {
 
         <View
           style={{
-            top: (height-480),
+            top: (height-505),
             justifyContent: 'center',
             alignItems: 'center',   
             backgroundColor: 'transparent',
@@ -173,15 +205,98 @@ export default class LoginPage extends Component {
         <View
           style={{
             backgroundColor: 'transparent',
-            left:15,
+            left:17,
             position:'absolute',
-            bottom:13
+            bottom: (height-(height-37))
           }}
         >
-            <TouchableOpacity onPress={()=>{alert("you clicked me")}}>
+            <TouchableOpacity onPress={()=>{this.openModal()}}>
                 <Text style={styles.staffLoginText}>Staff Login</Text>
             </TouchableOpacity>
         </View>
+
+        <Modal
+            visible={this.state.modalVisible}
+            animationType={'slide'}
+            transparent={true}
+            onRequestClose={() => this.closeModal()}
+        >
+          <View style={styles.modalContainer}>
+          {/* <StarRate /> */}
+            <View style={styles.innerContainer}>
+            <View style={{
+              backgroundColor: '#005696',
+              width: '100%',
+              height: 50,
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderTopLeftRadius: 5,
+              borderTopRightRadius: 5
+            }}>
+              <Text style={{
+                alignSelf: 'center',
+                color: '#fff',
+                fontSize: 20,
+                fontWeight: 'bold'
+              }}>Staff Login</Text>
+              </View>
+              <View style={{
+                  width: '80%',
+                  borderBottomWidth: 1,
+                  borderBottomColor: 'rgba(0, 86, 150, 0.3)',           
+                  backgroundColor: '#fff', 
+                  marginTop: 10,
+                  margin: 20,
+                  height: 40
+              }}>
+                <TextInput
+                    style={{padding: 10, fontSize: 15}}
+                    placeholder="Please Enter Email"
+                    underlineColorAndroid='transparent'
+                    placeholderTextColor='#ddd'
+                    onChangeText={(text) => this.setState({staffEmail: text})}
+                />
+              </View>
+              <View style={{
+                  width: '80%',
+                  borderBottomWidth: 1,
+                  borderBottomColor: 'rgba(0, 86, 150, 0.3)',           
+                  backgroundColor: '#fff', 
+                  marginTop: 10,
+                  margin: 20,
+                  height: 40
+              }}>
+                <TextInput
+                    style={{padding: 10, fontSize: 15}}
+                    placeholder="Please Enter Password"
+                    underlineColorAndroid='transparent'
+                    placeholderTextColor='#ddd'
+                    secureTextEntry={true}
+                    onChangeText={(text) => this.setState({staffPass: text})}
+                />
+              </View>
+              <View style={{flexDirection: 'row', alignSelf:'flex-end', justifyContent: 'flex-end'}}>
+                <Button
+                  small
+                  backgroundColor='#fff'
+                  color='#005696'
+                  fontSize={13}
+                  textStyle={{fontWeight: 'bold'}}
+                  onPress={()=>{this.closeModal()}}
+                  title='Cancel' />
+                <Button
+                  small
+                  backgroundColor='#fff'
+                  color='#005696'
+                  fontSize={13}
+                  textStyle={{fontWeight: 'bold'}}
+                  onPress={()=>{this.staffLogin()}}
+                  title='Login' />
+              </View>
+              
+            </View>
+          </View>
+        </Modal>
 
       </View>
     );
@@ -239,7 +354,21 @@ const styles = StyleSheet.create({
         left:10, 
         fontSize: 17, 
         letterSpacing: 1  
-      }
+      },
+      modalContainer: {
+        flex: 1,
+        width: width,
+        height: height,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'transparent',
+      },
+      innerContainer: {
+        width: '75%',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        borderRadius: 5
+      },
 })
 
 // Android ClientId:: 818648944845-1blv3luuul3t2n0op4eluihgifvedhj0.apps.googleusercontent.com

@@ -77,7 +77,7 @@ onStarRatingPress(rating) {
 
  render() {
     return (
-        <ScrollView style={{ height:(height-100), width: width }}>
+        <ScrollView style={{ top: 10, bottom: 30, height:(height), width: width }}>
 
         {
          
@@ -90,8 +90,10 @@ onStarRatingPress(rating) {
             <View key={key} style={styles.ListStyle}>
                 <View style={{flexDirection:'column', width: width}}>
                     <Text style={styles.foodMenuHeader}>{foodlist.name}</Text>
-                    <View style={{flexDirection: 'row',justifyContent:'space-between'}}> 
-                        <Text style={styles.foodMenuQuantity}>{foodlist.description}</Text>
+                    <View style={{width: width, flexDirection: 'row',justifyContent:'space-between'}}> 
+                        <View style={{width: 230}}>
+                            <Text style={styles.foodMenuQuantity}>{foodlist.description}</Text>
+                        </View>
                     <View style={{marginRight: 10}}>
                         <Text style={styles.foodMenuRate}>₹{foodlist.rate}</Text>
                     </View>
