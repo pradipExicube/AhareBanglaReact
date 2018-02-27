@@ -10,10 +10,9 @@ import {
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 
-const HomeScreen = () => {
- var {width,height} = Dimensions.get('window');
- const { container, ListStyle, IconStyle, textStyle } = styles;
-
+var {width,height} = Dimensions.get('window');
+export default class HomeScreen extends Component {
+ 
  openAbout = ()=>{
     Actions.about();
  };
@@ -35,80 +34,82 @@ const HomeScreen = () => {
  openSchedule = ()=>{
     Actions.programmeSchedule();
  };
-
+render() {
   return (
-    <View style={container}>
+    <View style={styles.container}>
+
         <Image
             style={{width: width ,height: 200, top: 20}}
             source={require('../assets/images/homeBanner.jpg')}
         />
         <ScrollView style={{height:(height-300), width: width, top: 20}}>
             <TouchableOpacity onPress={this.openAbout}>
-                <View style={ListStyle}>
+                <View style={styles.ListStyle}>
                     <Image
-                    style={IconStyle}
+                    style={styles.IconStyle}
                     source={require('../assets/images/homeListIcon1.png')}
                     />
-                    <Text style={textStyle}>About Ahare Bangla</Text> 
+                    <Text style={styles.textStyle}>About Ahare Bangla</Text> 
                 </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={this.openMap}>
-                <View style={ListStyle}>
+                <View style={styles.ListStyle}>
                     <Image
-                    style={IconStyle}
+                    style={styles.IconStyle}
                     source={require('../assets/images/homeListIcon2.png')}
                     />
-                    <Text style={textStyle}>Map</Text> 
+                    <Text style={styles.textStyle}>Map</Text> 
                 </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={this.openRestaurant}>
-                <View style={ListStyle}>
+                <View style={styles.ListStyle}>
                     <Image
-                    style={IconStyle}
+                    style={styles.IconStyle}
                     source={require('../assets/images/homeListIcon3.png')}
                     />
-                    <Text style={textStyle}>Restaurant</Text> 
+                    <Text style={styles.textStyle}>Restaurant</Text> 
                 </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={this.openSearch}>
-                <View style={ListStyle}>
+                <View style={styles.ListStyle}>
                     <Image
-                    style={IconStyle}
+                    style={styles.IconStyle}
                     source={require('../assets/images/homeListIcon4.png')}
                     />
-                    <Text style={textStyle}>Search</Text> 
+                    <Text style={styles.textStyle}>Search</Text> 
                 </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={this.openNews}>
-                <View style={ListStyle}>
+                <View style={styles.ListStyle}>
                     <Image
-                    style={IconStyle}
+                    style={styles.IconStyle}
                     source={require('../assets/images/homeListIcon5.png')}
                     />
-                    <Text style={textStyle}>News</Text> 
+                    <Text style={styles.textStyle}>News</Text> 
                 </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={this.openParking}>
-                    <View style={ListStyle}>
+                    <View style={styles.ListStyle}>
                         <Image
-                        style={IconStyle}
+                        style={styles.IconStyle}
                         source={require('../assets/images/homeListIcon6.png')}
                         />
-                        <Text style={textStyle}>Parking</Text> 
+                        <Text style={styles.textStyle}>Parking</Text> 
                     </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={this.openSchedule}>
-                <View style={ListStyle}>
+                <View style={styles.ListStyle}>
                     <Image
-                    style={IconStyle}
+                    style={styles.IconStyle}
                     source={require('../assets/images/homeListIcon7.png')}
                     />
-                    <Text style={textStyle}>Programme Schedule</Text>
+                    <Text style={styles.textStyle}>Programme Schedule</Text>
                 </View>
             </TouchableOpacity>
         </ScrollView>
     </View>
   );
+}
 }
 
 const styles = StyleSheet.create({
@@ -137,5 +138,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   }
 });
-
-export default HomeScreen;

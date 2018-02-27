@@ -1,6 +1,6 @@
 import React,{ Component } from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
-import { Router, Scene,Tabs, Stack } from 'react-native-router-flux';
+import { Router, Scene, Tabs, Stack, Actions } from 'react-native-router-flux';
 import HomeScreen from './src/components/HomeScreen';
 import MapScreen from './src/components/MapScreen';
 import RestaurantScreen from './src/components/RestaurantScreen';
@@ -15,9 +15,10 @@ import FoodMenuList from './src/components/FoodMenuList';
 import AboutPage from './src/components/AboutPage';
 import SearchPage from './src/components/SearchPage';
 import CommentPage from './src/components/CommentPage';
+import Feedback from './src/components/Feedback';
 
 export default class App extends Component {
-  state = { loggedIn: true };
+  state = { loggedIn: true, logintype:'' };
   componentWillMount() {
     // Initialize Firebase
     var config = {
@@ -32,10 +33,26 @@ export default class App extends Component {
     firebase.auth().onAuthStateChanged((user)=>{
       if(user){
           this.setState({ loggedIn: true });
+          let self = firebase.auth().currentUser.uid;
+          let checkref = firebase.database().ref('users/' + self);
+          checkref.on('value',(snap1)=>{
+          if(snap1.val()){
+            let data = snap1.val();
+            if(data.usertype){
+              this.setState({logintype: data.usertype},()=>{console.log(this.state.logintype)});
+            }
+          }
+        })
       }else{
           this.setState({ loggedIn: false });
       }
     });
+
+    
+
+  }
+  onPress() {
+    Actions.feedback();
   }
 
   authenticateUser() {
@@ -45,7 +62,13 @@ export default class App extends Component {
         <Router>
           <Scene key='root'>
             <Tabs key="root" tabs={true} tabBarPosition="bottom" tabBarStyle={styles.tabBar}>
+                {
+                (this.state.logintype == "staff") ?
+               
+                <Scene key="home" initial={true} title="Home" onRight={ ()=> {this.onPress()} } rightTitle={'FEEDBACK'} component={HomeScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} style={{color:'red'}} headerTintColor='#fff'/>
+                : 
                 <Scene key="home" initial={true} title="Home" component={HomeScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} style={{color:'red'}} headerTintColor='#fff'/>
+              }
                 <Scene key="map" title="Map" component={MapScreen} navigationBarStyle={{backgroundColor:'#005696',}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
                 <Scene key="restaurant"  title="Restaurant" component={RestaurantScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
                 <Scene key="news"  title="News" component={NewsScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
@@ -58,6 +81,7 @@ export default class App extends Component {
             <Scene key="about" title="About"  component={AboutPage} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
             <Scene key="search" title="Search"  component={SearchPage} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
             <Scene key="comment" title="Comment"  component={CommentPage} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
+            <Scene key="feedback" title="Staff Review"  component={Feedback} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
           </Scene>    
         </Router>
       );
