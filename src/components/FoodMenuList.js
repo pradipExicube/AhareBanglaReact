@@ -5,11 +5,15 @@ import {
   View,
   Dimensions,
   Image,
-  ScrollView
+  ScrollView,
+  Button, 
+  Modal,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import StarRating from 'react-native-star-rating';
 import { Actions } from 'react-native-router-flux';
+import * as firebase from 'firebase';
+import StarRate from './common/StarRating';
 
 var {width,height} = Dimensions.get('window');
 
@@ -18,13 +22,56 @@ export default class FoodMenuList extends Component {
 constructor(props) {
  super(props);
     this.state = {
-        starCount: 3.5,
+        starCount: 0,
+        foodData: [],
+        modalVisible: false,
+        menu_id: ''
     };
 }
 
-onStarRatingPress(rating) {
+componentWillMount() {
+    var ref = firebase.database().ref('rastaurants/' + this.props.res_id + "/category/" + this.props.cat_id + "/subcategory/" + this.props.id + "/menu" );
+    
+    alldata=[];
+
+    ref.on("value",(snapshot)=>{
+        
+        let menu=snapshot.val();
+        for(let i=0;i<menu.length;i++){
+          if(menu[i].ratings){
+              let obj = menu[i].ratings;
+              let rating = 0;
+              let count = 0;
+              for(let key in obj){
+                  rating = rating + parseInt(obj[key].rate);
+                  count++;
+              }
+              menu[i].user_rating = rating/count;
+              alldata.push(menu[i]);
+          }else{
+            menu[i].user_rating = 0;
+            alldata.push(menu[i]);
+        }
+
+      }
+      this.setState({foodData: alldata});
+    });
+}
+openModal(key) {
     this.setState({
-      starCount: rating
+        modalVisible:true,
+        menu_id: key
+    });
+  }
+  closeModal() {
+    this.setState({modalVisible:false});
+  }
+
+onStarRatingPress(rating) {
+    firebase.database().ref('rastaurants/' + this.props.res_id + "/category/" + this.props.cat_id + "/subcategory/" + this.props.id + "/menu/" + this.state.menu_id + "/ratings/" +  (firebase.auth().currentUser.uid)).set({rate: rating});
+    this.setState({
+      starCount: rating,
+      modalVisible: false
     });
 }
 
@@ -32,10 +79,10 @@ onStarRatingPress(rating) {
     return (
         <ScrollView style={{ height:(height-100), width: width }}>
 
-{
+        {
          
-        this.props.data.menu ? 
-        this.props.data.menu.map((foodlist,key)=>{
+        this.state.foodData ? 
+        this.state.foodData.map((foodlist,key)=>{
           // console.log('newsData');
           // console.log(news.desc);             
       return(
@@ -75,8 +122,11 @@ onStarRatingPress(rating) {
                             <StarRating
                                 disabled={false}
                                 maxStars={5}
-                                rating={this.state.starCount}
-                                selectedStar={(rating) => this.onStarRatingPress(rating)}
+                                rating={foodlist.user_rating}
+                                selectedStar={
+                                    () => this.openModal(key)
+                                    // (rating) => this.onStarRatingPress(rating)
+                                }
                                 fullStarColor = {'#ffb400'}
                                 starSize= {26}
                                 starStyle= {{ margin: 4 }}
@@ -85,15 +135,56 @@ onStarRatingPress(rating) {
                         </View>
                     </View>
                 </View>
-                {/* <View style={{marginRight: 10}}>
-                    <Text style={styles.foodMenuRate}>₹{foodlist.rate}</Text>
-                </View> */}
+
             </View>
             )
         })
             : null
         }
+        
+        <Modal
+            visible={this.state.modalVisible}
+            animationType={'slide'}
+            transparent={true}
+            onRequestClose={() => this.closeModal()}
+        >
+          <View style={styles.modalContainer}>
+          {/* <StarRate /> */}
+            <View style={styles.innerContainer}>
+                <View style={{
+                    flexDirection: 'row'
+                }}>
+                <Text style={{
+                    color: '#f6341a',
+                    fontSize: 24
+                }}>Give Us Feedback</Text>
+                <Button
+                    onPress={() => this.closeModal()}
+                    title="x"
+                    color='#ddd'
+                >
+                </Button>
+                </View>
+              <StarRating
+                disabled={false}
+                maxStars={5}
+                rating={this.state.starCount}
+                selectedStar={
+                    // () => this.openModal()
+                    (rating) => this.onStarRatingPress(rating)
+                }
+                fullStarColor = {'#ddc600'}
+                starSize= {26}
+                starStyle= {{ margin: 4 }}
+                emptyStarColor= '#ddc600'
+            />
+              
+            </View>
+          </View>
+        </Modal>
+
         </ScrollView>
+        
         );      
     }
 }
@@ -128,6 +219,18 @@ const styles = StyleSheet.create({
         fontSize: 22,
         minWidth: '20%',
         textAlign: 'center'
-    }
+    },
+      modalContainer: {
+        flex: 1,
+        width: width,
+        height: height,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'transparent',
+      },
+      innerContainer: {
+        alignItems: 'center',
+        backgroundColor: '#fff',
+      },
 });
 

@@ -24,36 +24,35 @@ export default class RestaurantScreen extends Component {
     super(props);
     console.log('restaurent_start');
     this.state = {
-      starCount: 3.5,
+      starCount: 0,
       restaurantData: [],
       notFound: false,
       modalVisible: false,
-      allvar: []
+      allvar: [],
+      res_id: ''
     };
   }
   componentWillMount() {
     // console.log(this.props.restaurantType);
-    if(this.props.restaurantType){
+    if(this.props.restaurantType) {
       var data = this.props.data;
       // console.log(data);
       if(data){
         var dSSdata=[];
 
-
-
         for(let i=0;i<data.length;i++) {
-          if(data[i].ratings){
+          if(data[i].ratings) {
               let obj = data[i].ratings;
               let rating = 0;
               let count = 0;
-              for(let key in obj){
+              for(let key in obj) {
                   rating = rating + parseInt(obj[key].rate);
                   count++;
               }
               data[i].user_rating = rating/count;
               dSSdata.push(data[i])
               console.log(data[i]);
-          }else{
+          }else {
             data[i].user_rating = 0;
             dSSdata.push(data[i])
           }
@@ -61,20 +60,12 @@ export default class RestaurantScreen extends Component {
       }
       this.setState({allvar: dSSdata});
 
-
-
-
-
-
-
-
-
         // this.setState({restaurantData: data, notFound: false});
-      }else{
+      }else {
         console.log('not found');
         this.setState({notFound: true});
       }
-    }else{
+    }else {
       console.log('firebase');
       let ref = firebase.database().ref('rastaurants');
       ref.on('value',(snap)=>{
@@ -92,8 +83,7 @@ export default class RestaurantScreen extends Component {
                       count++;
                   }
                   this.state.restaurantData[i].user_rating = rating/count;
-                  dSSdata.push(this.state.restaurantData[i])
-                  console.log(this.state.restaurantData[i]);
+                  dSSdata.push(this.state.restaurantData[i]);
               }else{
                 this.state.restaurantData[i].user_rating = 0;
                 dSSdata.push(this.state.restaurantData[i])
@@ -101,39 +91,11 @@ export default class RestaurantScreen extends Component {
         
           }
           this.setState({allvar: dSSdata});
-
-
-
-          
+  
           })
         }
       })
       
-
-
-/*
-
-    for(let i=0;i<this.state.restaurantData.length;i++) {
-      if(this.state.restaurantData[i].ratings){
-          let obj = this.state.restaurantData[i].ratings;
-          let rating = 0;
-          let count = 0;
-          for(let key in obj){
-              rating = rating + parseInt(obj[key].rate);
-              count++;
-          }
-          this.state.restaurantData[i].user_rating = rating/count;
-          console.log(this.state.restaurantData[i].user_rating);
-      }else{
-        this.state.restaurantData[i].user_rating = 0;
-      }
-
-  }
-*/
-
-
-
-
   console.log('restaurent_end');
 } 
   }
@@ -143,14 +105,18 @@ export default class RestaurantScreen extends Component {
   }
       
   onStarRatingPress(rating) {
+    firebase.database().ref("rastaurants/" + this.state.res_id + "/ratings/" + (firebase.auth().currentUser.uid) ).set({rate: rating});
     this.setState({
-      modalVisible:false,
-      starCount: rating
+      starCount: rating,
+      modalVisible: false
     });
   }
 
-  openModal() {
-    this.setState({modalVisible:true});
+  openModal(key) {
+    this.setState({
+      modalVisible:true,
+      res_id: key
+    });
   }
 
   closeModal() {
@@ -198,29 +164,13 @@ export default class RestaurantScreen extends Component {
                 </View>
               </TouchableWithoutFeedback>
               <View style={{ flexDirection: 'row' }}>
-                <Modal
-                      visible={this.state.modalVisible}
-                      // animationType={'slide'}
-                      transparent={true}
-                      onRequestClose={() => this.closeModal()}
-                    >
-                      <View style={styles.modalContainer}>
-                        <View style={styles.innerContainer}>
-                          <Text>This is content inside of modal component</Text>
-                          <Button
-                              onPress={() => this.closeModal()}
-                              title="Close modal"
-                          >
-                          </Button>
-                        </View>
-                      </View>
-                    </Modal>
+
                 <StarRating
                   disabled={false}
                   maxStars={5}
                   rating={restaurants.user_rating}
                   selectedStar={
-                    () => {this.openModal()}
+                    () => {this.openModal(key)}
                     // (rating) => this.onStarRatingPress(rating)
                   }
                   fullStarColor = {'#ddc600'}
@@ -254,6 +204,48 @@ export default class RestaurantScreen extends Component {
             })
               : null
             }
+            
+            <Modal
+                  visible={this.state.modalVisible}
+                  animationType={'slide'}
+                  transparent={true}
+                  onRequestClose={() => this.closeModal()}
+              >
+                <View style={styles.modalContainer}>
+                {/* <StarRate /> */}
+                  <View style={styles.innerContainer}>
+                      <View style={{
+                          flexDirection: 'row'
+                      }}>
+                      <Text style={{
+                          color: '#f6341a',
+                          fontSize: 24
+                      }}>Give Us Feedback</Text>
+                      <Button
+                          onPress={() => this.closeModal()}
+                          title="x"
+                          color='#ddd'
+                      >
+                      </Button>
+                      </View>
+                    <StarRating
+                      disabled={false}
+                      maxStars={5}
+                      rating={this.state.starCount}
+                      selectedStar={
+                          // () => this.openModal()
+                          (rating) => this.onStarRatingPress(rating)
+                      }
+                      fullStarColor = {'#ddc600'}
+                      starSize= {26}
+                      starStyle= {{ margin: 4 }}
+                      emptyStarColor= '#ddc600'
+                  />
+                    
+                  </View>
+                </View>
+              </Modal>
+
       </ScrollView>
     );
   }
@@ -275,14 +267,16 @@ const styles = StyleSheet.create({
     marginBottom:25 
   },
   modalContainer: {
-    // flex: 1,
-    width: '80%',
-    height: 200,
+    flex: 1,
+    width: width,
+    height: height,
     justifyContent: 'center',
-    // backgroundColor: 'grey',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
   },
   innerContainer: {
     alignItems: 'center',
+    backgroundColor: '#fff',
   },
 });
 
