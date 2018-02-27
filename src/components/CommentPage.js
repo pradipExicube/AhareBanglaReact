@@ -27,7 +27,7 @@ export default class CommentPage extends Component {
     }
     componentWillMount(){
         this.setState({comments: [], newComment: ''});
-        this.setState({user_id : firebase.auth().currentUser.uid},()=>{console.log(this.state.user_id)});
+        this.setState({user_id : firebase.auth().currentUser.uid});
         var ref = firebase.database().ref('/users/' + (firebase.auth().currentUser.uid) + '/');
         ref.on('value', (_snapshot) => {
             console.log(_snapshot.val())
@@ -63,11 +63,7 @@ export default class CommentPage extends Component {
                 }
                 console.log(allDataa)
            //this.setState({comments:allDataa});
-                this.setState({comments: allDataa},
-                    ()=> {console.log('callback......');
-                        console.log(this.state.comments)
-                    console.log('callback end')
-                    });
+                this.setState({comments: allDataa})
             }
             catch(e){
                 console.log("error : " + e);

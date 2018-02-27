@@ -8,7 +8,8 @@ import {
   ScrollView,
   Dimensions,
   Modal,
-  Button
+  Button,
+  Share
 } from 'react-native';
 import Card from './common/Card';
 import CardSection from './common/CardSection';
@@ -123,6 +124,15 @@ export default class RestaurantScreen extends Component {
     this.setState({modalVisible:false});
   }
 
+  shareIt(data,key) {
+    console.log('clicked.....');
+    Share.share(
+      {title: 'Ahare Bangla', message: "Come and Taste Your Favourite menu @"+" "+data.restaurants_name +" "+ "at Ahare Bangla's,"+ " "+data.positions+". For More Details Visit  http://www.wbfestivals.gov.in/"},
+      {dialogTitle: 'Share Using'}
+    )
+    console.log('click end.....');
+  }
+
 
 
 
@@ -193,7 +203,7 @@ export default class RestaurantScreen extends Component {
                   color='#005696'
                   size= {28}
                   containerStyle = {{marginLeft: 17, marginTop: 8}}
-                  onPress={() => alert('share')} 
+                  onPress={() => this.shareIt(restaurants,key)} 
                 />
               </View>
             </View>
@@ -204,7 +214,7 @@ export default class RestaurantScreen extends Component {
             })
               : null
             }
-            
+
             <Modal
                   visible={this.state.modalVisible}
                   animationType={'slide'}

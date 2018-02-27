@@ -7,7 +7,8 @@ import {
   Dimensions,
   TouchableWithoutFeedback,
   ScrollView,
-  Linking
+  Linking,
+  Share
 } from 'react-native';
 import Card from './common/Card';
 import CardSection from './common/CardSection';
@@ -31,6 +32,14 @@ export default class NewsScreen extends Component {
         this.setState({newsData:snap.val()})
       }
     })
+  }
+  shareIt(data,key) {
+    console.log('clicked.....');
+    Share.share(
+      {title: 'Ahare Bangla News', message: data.share_head +","+" "+data.share_msg+". For More Details Visit "+data.url},
+      {dialogTitle: 'Share Using'}
+    )
+    console.log('click end.....');
   }
 /*  
 renderNewsData() {
@@ -111,7 +120,7 @@ renderNewsData() {
               <Text style={styles.newsContent}>{news.desc}</Text>
             </View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={()=>{alert('sharebutton')}}>
+          <TouchableWithoutFeedback onPress={()=>{this.shareIt(news,key)}}>
             <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
               <Icon
                 name='md-share'
@@ -123,7 +132,7 @@ renderNewsData() {
                   marginBottom: 10, 
                   marginRight: 6 
                 }}
-                onPress={() => alert('share')} 
+                onPress={() => this.shareIt(news,key)} 
               />
               <Text style={
                 [styles.newsHeading,
