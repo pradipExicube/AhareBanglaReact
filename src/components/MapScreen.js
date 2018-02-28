@@ -5,7 +5,8 @@ import {
   View,
   Dimensions,
   Image,
-  ScrollView
+  ScrollView,
+  TouchableOpacity
 } from 'react-native';
 
 const MapScreen = () => {
@@ -13,10 +14,12 @@ const MapScreen = () => {
   return (
       <ScrollView>
         <ScrollView horizontal>
+        <TouchableOpacity onPress={(event)=>{console.log(event.nativeEvent.locationX,event.nativeEvent.locationY)}}>
         <Image
                 style={{width: 2616 ,height: 628,}}
                 source={require('../assets/images/map.jpg')}
             />
+        </TouchableOpacity>
         </ScrollView>
     </ScrollView>
   );

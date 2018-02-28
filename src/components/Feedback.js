@@ -84,20 +84,24 @@ export default class Feedback extends Component {
                         userrating: this.state.starCount,
                         usercomment: this.state.staffComment,
                         refUID: (firebase.auth().currentUser.uid)
-                    });
-                    this.setState({
-                        staffName: "" ,
-                        staffMob: "" ,
-                        starCount: 0,
-                        staffComment:''
+                    }).then(()=>{
+
+                        this.setState({
+                            staffName:'',
+                            staffMob:'',
+                            starCount:0,
+                            staffComment:'',
+                          },()=>{
+    
+                            Alert.alert(
+                                'Success',
+                                'You Have Successfully Submitted Your Review',
+                                [
+                                  {text: 'OK', onPress: () => console.log('OK Pressed')},
+                                ],
+                              )
+                          })
                       })
-                      Alert.alert(
-                        'Success',
-                        'You Have Successfully Submitted Your Review',
-                        [
-                          {text: 'OK', onPress: () => console.log('OK Pressed')},
-                        ],
-                      )
                 }
                 else if(this.props.Ttype == 'genfeed') {
                 firebase.database().ref("generalfeedback").push({
@@ -106,20 +110,26 @@ export default class Feedback extends Component {
                     userrating: this.state.starCount,
                     usercomment: this.state.staffComment,
                     refUID: (firebase.auth().currentUser.uid)
+                  }).then(()=>{
+
+                    this.setState({
+                        staffName:'',
+                        staffMob:'',
+                        starCount:0,
+                        staffComment:'',
+                      },()=>{
+
+                        Alert.alert(
+                            'Success',
+                            'You Have Successfully Submitted Your Review',
+                            [
+                              {text: 'OK', onPress: () => console.log('OK Pressed')},
+                            ],
+                          )
+                      })
                   })
-                  this.setState({
-                    staffName: "" ,
-                    staffMob: "" ,
-                    starCount: 0,
-                    staffComment:''
-                  })
-                  Alert.alert(
-                    'Success',
-                    'You Have Successfully Submitted Your Review',
-                    [
-                      {text: 'OK', onPress: () => console.log('OK Pressed')},
-                    ],
-                  )
+
+
                 }
                 else{
                     firebase.database().ref('rastaurants/' + this.props.res_id + "/category/" + this.props.cat_id + "/subcategory/" + this.props.subcat_id + "/menu/" + this.props.foodlistid + "/staffrating/").push({
@@ -186,6 +196,7 @@ export default class Feedback extends Component {
                                 placeholder="Please Enter Your Name"
                                 underlineColorAndroid='transparent'
                                 placeholderTextColor='#000'
+                                value={this.state.staffName}
                                 onChangeText={(text) => this.setState({staffName: text})}
                             />
                         </View>
@@ -213,6 +224,7 @@ export default class Feedback extends Component {
                                 placeholderTextColor='#000'
                                 keyboardType='numeric'
                                 maxLength={10}
+                                value={this.state.staffMob}
                                 onChangeText={(text) => this.setState({staffMob: text})}
                             />
                         </View>
@@ -270,6 +282,7 @@ export default class Feedback extends Component {
                                 numberOfLines = {4}
                                 underlineColorAndroid='transparent'
                                 placeholderTextColor='#000'
+                                value={this.state.staffComment}
                                 onChangeText={(text) => this.setState({staffComment: text})}
                             />
                         </View>

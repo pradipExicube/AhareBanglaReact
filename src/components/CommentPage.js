@@ -164,6 +164,7 @@ export default class CommentPage extends Component {
                         placeholder="Add a Message..."
                         underlineColorAndroid='transparent'
                         placeholderTextColor='#000'
+                        value={this.state.newComment}
                         onChangeText={(text) => this.setState({newComment: text})}
                     />
                     <View style={{width: 68, alignSelf:'flex-end'}}>
