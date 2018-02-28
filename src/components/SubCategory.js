@@ -67,6 +67,7 @@ export default class SubCategory extends Component {
 
                 <Image
                     style={styles.backgroundImage}
+                    resizeMode='contain'
                     source={require('../assets/images/innerPlate2.png')}
                 />  
             </ScrollView>

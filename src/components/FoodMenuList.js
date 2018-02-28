@@ -25,11 +25,28 @@ constructor(props) {
         starCount: 0,
         foodData: [],
         modalVisible: false,
-        menu_id: ''
+        menu_id: '',
+        logintype: ''
     };
 }
 
 componentWillMount() {
+
+    firebase.auth().onAuthStateChanged((user)=>{
+        if(user){
+      let checkref = firebase.database().ref('users/' + (firebase.auth().currentUser.uid));
+      checkref.on('value',(snap1)=>{
+      if(snap1.val()){
+        let data = snap1.val();
+        if(data.usertype){
+          this.setState({logintype: data.usertype},()=>{console.log(this.state.logintype)});
+           }
+          }
+        })
+      }
+    });
+
+
     var ref = firebase.database().ref('rastaurants/' + this.props.res_id + "/category/" + this.props.cat_id + "/subcategory/" + this.props.id + "/menu" );
     
     alldata=[];
@@ -98,6 +115,49 @@ onStarRatingPress(rating) {
                         <Text style={styles.foodMenuRate}>₹{foodlist.rate}</Text>
                     </View>
                     </View>
+
+            {
+                (this.state.logintype == "staff") ?
+
+                    <View style={{flexDirection: 'row'}}>
+                    <Icon
+                        name='md-chatbubbles'
+                        type='ionicon'
+                        color='#005696'
+                        size= {28}
+                        containerStyle = {{
+                            marginTop: 10,
+                            marginLeft: 20, 
+                            marginBottom: 5}}
+                        onPress={() => {Actions.feedback({
+                            foodlistdata: foodlist.comments,
+                            foodlistid: key, 
+                            Ttype: 'foodlist', 
+                            cat_id: this.props.cat_id, 
+                            subcat_id: this.props.id,
+                            res_id: this.props.res_id
+                            })}} 
+                    />
+                        <View style={{
+                            marginTop: 10, 
+                            marginLeft: 20, 
+                            marginBottom: 10}}>
+                            <StarRating
+                                disabled={true}
+                                maxStars={5}
+                                rating={foodlist.user_rating}
+                                selectedStar={
+                                    () => this.openModal(key)
+                                    // (rating) => this.onStarRatingPress(rating)
+                                }
+                                fullStarColor = {'#ffb400'}
+                                starSize= {26}
+                                starStyle= {{ margin: 4 }}
+                                emptyStarColor= '#ffb400'
+                            />
+                        </View>
+                    </View>
+                    :
                     <View style={{flexDirection: 'row'}}>
                     <Icon
                         name='md-chatbubbles'
@@ -136,6 +196,7 @@ onStarRatingPress(rating) {
                             />
                         </View>
                     </View>
+            }
                 </View>
 
             </View>

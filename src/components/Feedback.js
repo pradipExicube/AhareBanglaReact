@@ -6,7 +6,8 @@ import {
   Dimensions,
   Image,
   ScrollView,
-  TextInput
+  TextInput,
+  Alert
 } from 'react-native';
 import * as firebase from 'firebase';
 import StarRating from 'react-native-star-rating';
@@ -17,6 +18,9 @@ export default class Feedback extends Component {
         super(props);
         this.state = {
             starCount: 0,
+            staffName: '',
+            staffMob: '',
+            staffComment: ''
           }
           
     }
@@ -24,6 +28,123 @@ export default class Feedback extends Component {
         this.setState({
           starCount: rating,
         });
+      }
+
+      reviewSubmit() {
+          console.log(this.state.staffName);
+          console.log(this.state.staffMob);
+          console.log(this.state.starCount);
+          console.log(this.state.staffComment);
+          if(this.state.staffName == undefined || this.state.staffName =="" || this.state.staffName==null || 
+          this.state.staffMob == undefined || this.state.staffMob =="" || this.state.staffMob==null ||  
+          this.state.starCount == undefined || this.state.starCount==null || this.state.starCount == 0 ||
+          this.state.staffComment == undefined || this.state.staffComment =="" || this.state.staffComment==null)
+          {
+
+                if(this.state.staffName == undefined || this.state.staffName =="" || this.state.staffName==null){
+                    Alert.alert(
+                        'Error',
+                        'User Name field can not be blank',
+                        [
+                          {text: 'OK', onPress: () => console.log('OK Pressed')},
+                        ],
+                      )
+                }else if(this.state.staffMob == undefined || this.state.staffMob =="" || this.state.staffMob==null){
+                    Alert.alert(
+                        'Error',
+                        'User Contact field can not be blank',
+                        [
+                          {text: 'OK', onPress: () => console.log('OK Pressed')},
+                        ],
+                      )
+                }else if(this.state.starCount == undefined || this.state.starCount==null || this.state.starCount == 0){
+                    Alert.alert(
+                        'Error',
+                        'Rating field can not be blank',
+                        [
+                          {text: 'OK', onPress: () => console.log('OK Pressed')},
+                        ],
+                      )
+                }else if(this.state.staffComment == undefined || this.state.staffComment =="" || this.state.staffComment==null){
+                    Alert.alert(
+                        'Error',
+                        'User Comment field can not be blank',
+                        [
+                          {text: 'OK', onPress: () => console.log('OK Pressed')},
+                        ],
+                      )
+                }
+            }
+            else {
+                if(this.props.Ttype == "res"){
+                    // console.log(this.ratingUserrating,this.res_id);
+                    firebase.database().ref("rastaurants/" + this.props.id + "/staffrating/").push({
+                        username: this.state.staffName,
+                        usermobile: this.state.staffMob,
+                        userrating: this.state.starCount,
+                        usercomment: this.state.staffComment,
+                        refUID: (firebase.auth().currentUser.uid)
+                    });
+                    this.setState({
+                        staffName: "" ,
+                        staffMob: "" ,
+                        starCount: 0,
+                        staffComment:''
+                      })
+                      Alert.alert(
+                        'Success',
+                        'You Have Successfully Submitted Your Review',
+                        [
+                          {text: 'OK', onPress: () => console.log('OK Pressed')},
+                        ],
+                      )
+                }
+                else if(this.props.Ttype == 'genfeed') {
+                firebase.database().ref("generalfeedback").push({
+                    username: this.state.staffName,
+                    usermobile: this.state.staffMob,
+                    userrating: this.state.starCount,
+                    usercomment: this.state.staffComment,
+                    refUID: (firebase.auth().currentUser.uid)
+                  })
+                  this.setState({
+                    staffName: "" ,
+                    staffMob: "" ,
+                    starCount: 0,
+                    staffComment:''
+                  })
+                  Alert.alert(
+                    'Success',
+                    'You Have Successfully Submitted Your Review',
+                    [
+                      {text: 'OK', onPress: () => console.log('OK Pressed')},
+                    ],
+                  )
+                }
+                else{
+                    firebase.database().ref('rastaurants/' + this.props.res_id + "/category/" + this.props.cat_id + "/subcategory/" + this.props.subcat_id + "/menu/" + this.props.foodlistid + "/staffrating/").push({
+                        username: this.state.staffName,
+                        usermobile: this.state.staffMob,
+                        userrating: this.state.starCount,
+                        usercomment: this.state.staffComment,
+                        refUID: (firebase.auth().currentUser.uid)
+                    });
+                    this.setState({
+                        staffName: "" ,
+                        staffMob: "" ,
+                        starCount: 0,
+                        staffComment:''
+                      })
+                      Alert.alert(
+                        'Success',
+                        'You Have Successfully Submitted Your Review',
+                        [
+                          {text: 'OK', onPress: () => console.log('OK Pressed')},
+                        ],
+                      )
+                  } 
+                  
+            }
       }
 
  render() {
@@ -38,6 +159,13 @@ export default class Feedback extends Component {
                     >
 
                         <View>
+                        <Text style={{
+                                    color: '#005696',
+                                    fontWeight: 'bold',
+                                    fontSize: 20,
+                                    marginTop: 10,
+                                    marginLeft: 20
+                                }}>Give Us Review</Text>
                         <Text style={{
                                     color: 'rgba(0, 86, 150, 0.9)',
                                     fontWeight: 'normal',
@@ -58,7 +186,7 @@ export default class Feedback extends Component {
                                 placeholder="Please Enter Your Name"
                                 underlineColorAndroid='transparent'
                                 placeholderTextColor='#000'
-                                onChangeText={(text) => this.setState({searchName: text})}
+                                onChangeText={(text) => this.setState({staffName: text})}
                             />
                         </View>
                     </View>
@@ -83,7 +211,9 @@ export default class Feedback extends Component {
                                 placeholder="Please Enter Your Mobile Number"
                                 underlineColorAndroid='transparent'
                                 placeholderTextColor='#000'
-                                onChangeText={(text) => this.setState({searchName: text})}
+                                keyboardType='numeric'
+                                maxLength={10}
+                                onChangeText={(text) => this.setState({staffMob: text})}
                             />
                         </View>
                     </View>
@@ -140,7 +270,7 @@ export default class Feedback extends Component {
                                 numberOfLines = {4}
                                 underlineColorAndroid='transparent'
                                 placeholderTextColor='#000'
-                                onChangeText={(text) => this.setState({searchName: text})}
+                                onChangeText={(text) => this.setState({staffComment: text})}
                             />
                         </View>
                     </View>
@@ -152,7 +282,7 @@ export default class Feedback extends Component {
                         color='#fff'
                         fontSize={15}
                         textStyle={{fontWeight: 'bold'}}
-                        onPress={()=>{alert('you subit it')}}
+                        onPress={()=>{this.reviewSubmit()}}
                         title='SUBMIT' />
                     </View>
             </ScrollView>

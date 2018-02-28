@@ -52,7 +52,7 @@ export default class App extends Component {
 
   }
   onPress() {
-    Actions.feedback();
+    Actions.feedback({Ttype: 'genfeed'});
   }
 
   authenticateUser() {

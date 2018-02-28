@@ -110,6 +110,7 @@ renderNewsData() {
             <View style={{ margin: 10 }}>
               <Image
                 style={styles.ImageStyle}
+                resizeMode='stretch'
                 source={{uri: news.img}}
               />
             </View>

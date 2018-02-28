@@ -30,10 +30,28 @@ export default class RestaurantScreen extends Component {
       notFound: false,
       modalVisible: false,
       allvar: [],
-      res_id: ''
+      res_id: '',
+      logintype: ''
     };
   }
   componentWillMount() {
+
+
+    firebase.auth().onAuthStateChanged((user)=>{
+      if(user){
+    let checkref = firebase.database().ref('users/' + (firebase.auth().currentUser.uid));
+    checkref.on('value',(snap1)=>{
+    if(snap1.val()){
+      let data = snap1.val();
+      if(data.usertype){
+        this.setState({logintype: data.usertype},()=>{console.log(this.state.logintype)});
+         }
+        }
+      })
+    }
+  });
+
+
     // console.log(this.props.restaurantType);
     if(this.props.restaurantType) {
       var data = this.props.data;
@@ -97,8 +115,9 @@ export default class RestaurantScreen extends Component {
         }
       })
       
-  console.log('restaurent_end');
-} 
+      console.log('restaurent_end');
+    }
+
   }
   goFoodmenu(data,key) {
     // console.log(key);
@@ -154,6 +173,7 @@ export default class RestaurantScreen extends Component {
             <TouchableWithoutFeedback onPress={()=>{this.goFoodmenu(restaurants,key)}}>
               <Image
                   style={styles.IconStyle}
+                  resizeMode='stretch'
                   source={{uri: restaurants.logo}}
               />
             </TouchableWithoutFeedback>
@@ -173,10 +193,14 @@ export default class RestaurantScreen extends Component {
                   <Text style={{ color: '#b1b1b1', marginTop: 12 }}>Stall No: {restaurants.stall_no}</Text>
                 </View>
               </TouchableWithoutFeedback>
+
+              {
+                  (this.state.logintype == "staff") ?
+              
               <View style={{ flexDirection: 'row' }}>
 
                 <StarRating
-                  disabled={false}
+                  disabled={true}
                   maxStars={5}
                   rating={restaurants.user_rating}
                   selectedStar={
@@ -195,7 +219,7 @@ export default class RestaurantScreen extends Component {
                   color='#005696'
                   size= {28}
                   containerStyle = {{marginLeft: 35, marginTop: 8}}
-                  onPress={() => Actions.comment({data: restaurants, id: key, Ttype: 'res'})} 
+                  onPress={() => Actions.feedback({data: restaurants, id: key, Ttype: 'res'})} 
                 />
                 <Icon
                   name='md-share'
@@ -206,6 +230,41 @@ export default class RestaurantScreen extends Component {
                   onPress={() => this.shareIt(restaurants,key)} 
                 />
               </View>
+              :
+              <View style={{ flexDirection: 'row' }}>
+
+              <StarRating
+                disabled={false}
+                maxStars={5}
+                rating={restaurants.user_rating}
+                selectedStar={
+                  () => {this.openModal(key)}
+                  // (rating) => this.onStarRatingPress(rating)
+                }
+                fullStarColor = {'#ddc600'}
+                starSize= {18}
+                starStyle= {{ marginTop: 16, margin: 2 }}
+                emptyStarColor= '#ddc600'
+              />
+                
+              <Icon
+                name='md-chatbubbles'
+                type='ionicon'
+                color='#005696'
+                size= {28}
+                containerStyle = {{marginLeft: 35, marginTop: 8}}
+                onPress={() => Actions.comment({data: restaurants, id: key, Ttype: 'res'})} 
+              />
+              <Icon
+                name='md-share'
+                type='ionicon'
+                color='#005696'
+                size= {28}
+                containerStyle = {{marginLeft: 17, marginTop: 8}}
+                onPress={() => this.shareIt(restaurants,key)} 
+              />
+            </View>    
+            }
             </View>
           </CardSection>
         </Card>
