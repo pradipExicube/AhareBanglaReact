@@ -120,24 +120,6 @@ onStarRatingPress(rating) {
                 (this.state.logintype == "staff") ?
 
                     <View style={{flexDirection: 'row'}}>
-                    <Icon
-                        name='md-chatbubbles'
-                        type='ionicon'
-                        color='#005696'
-                        size= {28}
-                        containerStyle = {{
-                            marginTop: 10,
-                            marginLeft: 20, 
-                            marginBottom: 5}}
-                        onPress={() => {Actions.feedback({
-                            foodlistdata: foodlist.comments,
-                            foodlistid: key, 
-                            Ttype: 'foodlist', 
-                            cat_id: this.props.cat_id, 
-                            subcat_id: this.props.id,
-                            res_id: this.props.res_id
-                            })}} 
-                    />
                         <View style={{
                             marginTop: 10, 
                             marginLeft: 20, 

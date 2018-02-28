@@ -32,6 +32,7 @@ export default class App extends Component {
     firebase.initializeApp(config);
     firebase.auth().onAuthStateChanged((user)=>{
       if(user){
+        // firebase.auth().signOut();
           this.setState({ loggedIn: true });
           let self = firebase.auth().currentUser.uid;
           let checkref = firebase.database().ref('users/' + self);
