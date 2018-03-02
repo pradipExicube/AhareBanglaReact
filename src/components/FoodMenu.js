@@ -35,7 +35,7 @@ export default class FoodMenu extends Component {
        if(this.props.id >=0){
     
             let reff = firebase.database().ref('/rastaurants/'+ this.props.id );
-            reff.on('value', (snap1)=>{
+            reff.once('value', (snap1)=>{
               if(snap1.val()){
                 this.setState({restaurantName: snap1.val().restaurants_name});
               }
@@ -44,7 +44,7 @@ export default class FoodMenu extends Component {
     
         var ref = firebase.database().ref('rastaurants/' + this.props.id + "/category" );
         
-        ref.on("value",(snapshot)=>{
+        ref.once("value",(snapshot)=>{
           if(snapshot.val()){
             this.setState({cat: snapshot.val()});
             console.log(this.state.cat.length);

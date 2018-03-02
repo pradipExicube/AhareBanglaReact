@@ -36,7 +36,7 @@ export default class App extends Component {
           this.setState({ loggedIn: true });
           let self = firebase.auth().currentUser.uid;
           let checkref = firebase.database().ref('users/' + self);
-          checkref.on('value',(snap1)=>{
+          checkref.once('value',(snap1)=>{
           if(snap1.val()){
             let data = snap1.val();
             if(data.usertype){

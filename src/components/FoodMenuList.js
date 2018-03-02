@@ -35,7 +35,7 @@ componentWillMount() {
     firebase.auth().onAuthStateChanged((user)=>{
         if(user){
       let checkref = firebase.database().ref('users/' + (firebase.auth().currentUser.uid));
-      checkref.on('value',(snap1)=>{
+      checkref.once('value',(snap1)=>{
       if(snap1.val()){
         let data = snap1.val();
         if(data.usertype){

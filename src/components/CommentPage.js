@@ -29,7 +29,7 @@ export default class CommentPage extends Component {
         this.setState({comments: [], newComment: ''});
         this.setState({user_id : firebase.auth().currentUser.uid});
         var ref = firebase.database().ref('/users/' + (firebase.auth().currentUser.uid) + '/');
-        ref.on('value', (_snapshot) => {
+        ref.once('value', (_snapshot) => {
             console.log(_snapshot.val())
           if(_snapshot.val()){
             if(_snapshot.val().username){

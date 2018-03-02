@@ -27,7 +27,7 @@ export default class NewsScreen extends Component {
   }
   componentWillMount(){
     let ref = firebase.database().ref('news');
-    ref.on('value',(snap)=>{
+    ref.once('value',(snap)=>{
       if(snap.val()){
         this.setState({newsData:snap.val()})
       }

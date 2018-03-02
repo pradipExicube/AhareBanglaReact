@@ -9,9 +9,16 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
+import * as firebase from 'firebase';
 
 var {width,height} = Dimensions.get('window');
 export default class HomeScreen extends Component {
+ constructor(props) {
+     super(props);
+     this.state = {
+        restaurantData: [],
+     }
+ }
  
  openAbout = ()=>{
     Actions.about();
@@ -20,7 +27,39 @@ export default class HomeScreen extends Component {
     Actions.map();
  };
  openRestaurant = ()=>{
-    Actions.restaurant();
+   // Actions.restaurant();
+
+   let ref = firebase.database().ref('rastaurants');
+   ref.on('value',(snap)=>{
+     if(snap.val()){
+       this.setState({restaurantData: snap.val()},()=>{
+         var dSSdata=[];
+
+         for(let i=0;i<this.state.restaurantData.length;i++) {
+           if(this.state.restaurantData[i].ratings){
+               let obj = this.state.restaurantData[i].ratings;
+               let rating = 0;
+               let count = 0;
+               for(let key in obj){
+                   rating = rating + parseInt(obj[key].rate);
+                   count++;
+               }
+               this.state.restaurantData[i].user_rating = rating/count;
+               dSSdata.push(this.state.restaurantData[i]);
+           }else{
+             this.state.restaurantData[i].user_rating = 0;
+             dSSdata.push(this.state.restaurantData[i])
+           }
+     
+       }
+       //this.setState({allvar: dSSdata});
+       Actions.restaurant({mapdata: dSSdata});
+
+       })
+     }
+   })
+
+
  };
  openSearch = ()=>{
     Actions.search();
