@@ -8,13 +8,12 @@ import {
   ScrollView,
   Dimensions,
   Modal,
-  Button,
   Share
 } from 'react-native';
 import Card from './common/Card';
 import CardSection from './common/CardSection';
 import StarRating from 'react-native-star-rating';
-import { Icon } from 'react-native-elements'
+import { Icon, Button } from 'react-native-elements'
 import { Actions } from 'react-native-router-flux';
 import * as firebase from 'firebase';
 import CustomHeader from './common/CustomHeader';
@@ -36,16 +35,7 @@ export default class RestaurantScreen extends Component {
       };
   }
 
-  // componentWillReceiveProps(){
-  //  console.log("hello "); 
-  //  console.log(this.props.Ttype);
-  // }
-  async componentWillMount() {
-    // console.log('kgkgkgkgkgkgkgykg');
-    // console.log(this.props.Ttype);
-    // let mData = await this.props.Ttype;
-    // console.log("data is : " + mData);
-
+  componentWillMount() {
     firebase.auth().onAuthStateChanged((user)=>{
       if(user){
       let checkref = firebase.database().ref('users/' + (firebase.auth().currentUser.uid));
@@ -60,12 +50,9 @@ export default class RestaurantScreen extends Component {
     }
   });
 
-
-    // console.log(this.props.restaurantType);
     if(this.props.restaurantType) {
       console.log('from search page')
       var data = this.props.data;
-      // console.log(data);
       if(data){
         var dSSdata=[];
 
@@ -89,7 +76,6 @@ export default class RestaurantScreen extends Component {
       }
       this.setState({allvar: dSSdata});
 
-        // this.setState({restaurantData: data, notFound: false});
       }else {
         console.log('not found');
         this.setState({notFound: true});
@@ -135,49 +121,6 @@ export default class RestaurantScreen extends Component {
 
   }
   
-  // componentDidUpdate() {
-  //   if(this.props.Ttype) {
-  //     var mapdata = [] ;
-  //     var newArr = [];
-  //     var resArray = [];
-  //     let resname = this.props.resPos;
-  //     let reff = firebase.database().ref('rastaurants');
-  //     reff.on('value',(snapshot)=>{
-  //       if(snapshot.val()) {
-  //         mapdata = snapshot.val();
-  //         for(let i=0;i<mapdata.length;i++){
-  //           if(mapdata[i].ratings){
-  //               let obj = mapdata[i].ratings;
-  //               let rating = 0;
-  //               let count = 0;
-  //               for(let key in obj){
-  //                   rating = rating + parseInt(obj[key].rate);
-  //                   count++;
-  //               }
-  //               mapdata[i].user_rating = rating/count;
-  //               resArray.push(mapdata[i]);
-  //           }else{
-  //             mapdata[i].user_rating = 0;
-  //             resArray.push(mapdata[i]);
-  //           }
-
-  //       }
-  //       for(let j=0; j<resArray.length; j++){
-  //         if(resArray[j].positions){
-  //           let resPosition = resArray[j].positions;
-  //           for(let k=0; k<resPosition.length; k++){
-  //             if(resPosition[k]==resname){
-  //               newArr.push(resArray[j]);
-  //               break;
-  //             }
-  //           }
-  //         }
-  //       }
-  //       }
-  //     })
-  //   }
-  // }
-  
   renderMapData(arr) {
     this.setState({allvar: arr});
   }
@@ -221,15 +164,7 @@ export default class RestaurantScreen extends Component {
   console.log("hello "); 
     console.log(this.props.mapdata);
     if(this.props.mapdata){
-      //this.setState({allvar:[]},()=>{
-      //   this.setState({allvar:this.props.mapdata},()=>{console.log("checking"); console.log(this.state.allvar); console.log("end..!")})
-      // })
       this.props.mapdata.map((restaurants, key)=>{
-
-
-
-
-
 
         return(
           <View>
@@ -270,7 +205,6 @@ export default class RestaurantScreen extends Component {
                     rating={restaurants.user_rating}
                     selectedStar={
                       () => {this.openModal(key)}
-                      // (rating) => this.onStarRatingPress(rating)
                     }
                     fullStarColor = {'#ddc600'}
                     starSize= {18}
@@ -304,7 +238,6 @@ export default class RestaurantScreen extends Component {
                   rating={restaurants.user_rating}
                   selectedStar={
                     () => {this.openModal(key)}
-                    // (rating) => this.onStarRatingPress(rating)
                   }
                   fullStarColor = {'#ddc600'}
                   starSize= {18}
@@ -347,9 +280,7 @@ export default class RestaurantScreen extends Component {
   render() {
     console.log("hello "); 
     console.log(this.props.Ttype);
-    // if(this.props.mapdata){
-    //   this.setState({allvar:this.props.mapdata},()=>{console.log("checking"); console.log(this.state.allvar); console.log("end..!")})
-    // }
+
     return (
       <View>
         <CustomHeader Headershow={true} showFeedbackButton={false} headerName="Restaurant List" showSearchButton={true} showLogoutButton={true} showBackbutton= {false} onPressLogout={()=>{alert("Logout Clicked")}} onPressBack={()=>{alert("back icon Clicked")}}/>
@@ -398,7 +329,6 @@ export default class RestaurantScreen extends Component {
                     rating={restaurants.user_rating}
                     selectedStar={
                       () => {this.openModal(key)}
-                      // (rating) => this.onStarRatingPress(rating)
                     }
                     fullStarColor = {'#ddc600'}
                     starSize= {18}
@@ -432,7 +362,6 @@ export default class RestaurantScreen extends Component {
                   rating={restaurants.user_rating}
                   selectedStar={
                     () => {this.openModal(key)}
-                    // (rating) => this.onStarRatingPress(rating)
                   }
                   fullStarColor = {'#ddc600'}
                   starSize= {18}
@@ -468,10 +397,8 @@ export default class RestaurantScreen extends Component {
             (
                this.state.allvar ? 
                this.state.allvar.map((restaurants,key)=>{
-                  // console.log('restaurantData');
-                  // console.log(restaurants.restaurants_name);
            
-              return(
+            return(
       
         <Card key={key}>
           <CardSection>
@@ -510,7 +437,6 @@ export default class RestaurantScreen extends Component {
                   rating={restaurants.user_rating}
                   selectedStar={
                     () => {this.openModal(key)}
-                    // (rating) => this.onStarRatingPress(rating)
                   }
                   fullStarColor = {'#ddc600'}
                   starSize= {18}
@@ -544,7 +470,6 @@ export default class RestaurantScreen extends Component {
                 rating={restaurants.user_rating}
                 selectedStar={
                   () => {this.openModal(key)}
-                  // (rating) => this.onStarRatingPress(rating)
                 }
                 fullStarColor = {'#ddc600'}
                 starSize= {18}
@@ -579,46 +504,49 @@ export default class RestaurantScreen extends Component {
               : null)
             }
 
-            <Modal
-                  visible={this.state.modalVisible}
-                  animationType={'slide'}
-                  transparent={true}
-                  onRequestClose={() => this.closeModal()}
-              >
-                <View style={styles.modalContainer}>
-                {/* <StarRate /> */}
-                  <View style={styles.innerContainer}>
-                      <View style={{
-                          flexDirection: 'row'
-                      }}>
-                      <Text style={{
-                          color: '#f6341a',
-                          fontSize: 24
-                      }}>Give Us Feedback</Text>
-                      <Button
-                          onPress={() => this.closeModal()}
-                          title="x"
-                          color='#ddd'
-                      >
-                      </Button>
-                      </View>
-                    <StarRating
-                      disabled={false}
-                      maxStars={5}
-                      rating={this.state.starCount}
-                      selectedStar={
-                          // () => this.openModal()
-                          (rating) => this.onStarRatingPress(rating)
-                      }
-                      fullStarColor = {'#ddc600'}
-                      starSize= {26}
-                      starStyle= {{ margin: 4 }}
-                      emptyStarColor= '#ddc600'
-                  />
-                    
-                  </View>
+        <Modal
+            visible={this.state.modalVisible}
+            animationType={'slide'}
+            transparent={true}
+            onRequestClose={() => this.closeModal()}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.innerContainer}>
+                <View style={{alignContent: 'flex-end', marginLeft: 220}}>
+                    <Button
+                        small
+                        buttonStyle={{width: 40,height: 10,}}
+                        backgroundColor='transparent'
+                        color='#000'
+                        fontSize={20}
+                        textStyle={{fontWeight: 'bold'}}
+                        onPress={()=>{this.closeModal()}}
+                        title='x' 
+                    />
                 </View>
-              </Modal>
+                <View style={{alignItems: 'center', justifyContent: 'space-around'}}>
+                    <Text style={{
+                        color: '#f6341a',
+                        fontSize: 24,
+                        alignSelf: 'center'
+                    }}>Give Us Feedback</Text>
+                    
+                    <StarRating
+                        disabled={false}
+                        maxStars={5}
+                        rating={this.state.starCount}
+                        selectedStar={
+                            (rating) => this.onStarRatingPress(rating)
+                        }
+                        fullStarColor = {'#ddc600'}
+                        starSize= {26}
+                        starStyle= {{ margin: 6, }}
+                        emptyStarColor= '#ddc600'
+                    />
+                  </View>              
+              </View>
+          </View>
+        </Modal>
 
       </ScrollView>
       </View>
@@ -650,8 +578,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   innerContainer: {
-    alignItems: 'center',
     backgroundColor: '#fff',
+    width: '75%',
+    borderRadius: 5,
+    height: 120
   },
 });
 

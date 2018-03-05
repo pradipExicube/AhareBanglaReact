@@ -5,15 +5,13 @@ import {
   View,
   Dimensions,
   Image,
-  ScrollView,
-  Button, 
+  ScrollView, 
   Modal,
 } from 'react-native';
-import { Icon } from 'react-native-elements';
+import { Icon, Button } from 'react-native-elements';
 import StarRating from 'react-native-star-rating';
 import { Actions } from 'react-native-router-flux';
 import * as firebase from 'firebase';
-import StarRate from './common/StarRating';
 import CustomHeader from './common/CustomHeader';
 
 var {width,height} = Dimensions.get('window');
@@ -86,7 +84,9 @@ openModal(key) {
   }
 
 onStarRatingPress(rating) {
-    firebase.database().ref('rastaurants/' + this.props.res_id + "/category/" + this.props.cat_id + "/subcategory/" + this.props.id + "/menu/" + this.state.menu_id + "/ratings/" +  (firebase.auth().currentUser.uid)).set({rate: rating});
+    firebase.database().ref('rastaurants/' + this.props.res_id + "/category/" + this.props.cat_id + "/subcategory/" + this.props.id + "/menu/" + this.state.menu_id + "/ratings/" +  (firebase.auth().currentUser.uid))
+    .set({rate: rating});
+    
     this.setState({
       starCount: rating,
       modalVisible: false
@@ -197,36 +197,40 @@ onStarRatingPress(rating) {
             onRequestClose={() => this.closeModal()}
         >
           <View style={styles.modalContainer}>
-          {/* <StarRate /> */}
             <View style={styles.innerContainer}>
-                <View style={{
-                    flexDirection: 'row'
-                }}>
-                <Text style={{
-                    color: '#f6341a',
-                    fontSize: 24
-                }}>Give Us Feedback</Text>
-                <Button
-                    onPress={() => this.closeModal()}
-                    title="x"
-                    color='#ddd'
-                >
-                </Button>
+                <View style={{alignContent: 'flex-end', marginLeft: 220}}>
+                    <Button
+                        small
+                        buttonStyle={{width: 40,height: 10,}}
+                        backgroundColor='transparent'
+                        color='#000'
+                        fontSize={20}
+                        textStyle={{fontWeight: 'bold'}}
+                        onPress={()=>{this.closeModal()}}
+                        title='x' 
+                    />
                 </View>
-              <StarRating
-                disabled={false}
-                maxStars={5}
-                rating={this.state.starCount}
-                selectedStar={
-                    // () => this.openModal()
-                    (rating) => this.onStarRatingPress(rating)
-                }
-                fullStarColor = {'#ddc600'}
-                starSize= {26}
-                starStyle= {{ margin: 4 }}
-                emptyStarColor= '#ddc600'
-            />
-              
+                <View style={{alignItems: 'center', justifyContent: 'space-around'}}>
+                    <Text style={{
+                        color: '#f6341a',
+                        fontSize: 24,
+                        alignSelf: 'center'
+                    }}>Give Us Feedback</Text>
+                    
+                    <StarRating
+                        disabled={false}
+                        maxStars={5}
+                        rating={this.state.starCount}
+                        selectedStar={
+                            // () => this.openModal()
+                            (rating) => this.onStarRatingPress(rating)
+                        }
+                        fullStarColor = {'#ddc600'}
+                        starSize= {26}
+                        starStyle= {{ margin: 6, }}
+                        emptyStarColor= '#ddc600'
+                    />
+                </View>              
             </View>
           </View>
         </Modal>
@@ -278,8 +282,10 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
       },
       innerContainer: {
-        alignItems: 'center',
         backgroundColor: '#fff',
+        width: '75%',
+        borderRadius: 5,
+        height: 120
       },
 });
 

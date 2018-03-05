@@ -11,7 +11,6 @@ import {
 import { Actions } from 'react-native-router-flux';
 import * as firebase from 'firebase';
 import CustomHeader from './common/CustomHeader';
-import Header from './common/Header';
 
 import {
     Menu,
