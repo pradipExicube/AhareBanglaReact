@@ -10,6 +10,15 @@ import {
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import * as firebase from 'firebase';
+import CustomHeader from './common/CustomHeader';
+import Header from './common/Header';
+
+import {
+    Menu,
+    MenuOptions,
+    MenuOption,
+    MenuTrigger,
+  } from 'react-native-popup-menu';
 
 var {width,height} = Dimensions.get('window');
 export default class HomeScreen extends Component {
@@ -17,71 +26,104 @@ export default class HomeScreen extends Component {
      super(props);
      this.state = {
         restaurantData: [],
+        logintype: '',
+        isVisible: false,
+        buttonRect: {},
      }
  }
+
+ componentWillMount() {
+    firebase.auth().onAuthStateChanged((user)=>{
+        if(user){
+            let self = firebase.auth().currentUser.uid;
+            let checkref = firebase.database().ref('users/' + self);
+            checkref.once('value',(snap1)=>{
+            if(snap1.val()){
+              let data = snap1.val();
+              if(data.usertype){
+                this.setState({logintype: data.usertype},()=>{console.log(this.state.logintype)});
+              }
+            }
+          })
+        }
+    });
+ }
  
- openAbout = ()=>{
+ openAbout() {
     Actions.about();
  };
- openMap = ()=>{
+ openMap() {
     Actions.map();
  };
- openRestaurant = ()=>{
+ openRestaurant() {
    // Actions.restaurant();
 
    let ref = firebase.database().ref('rastaurants');
    ref.on('value',(snap)=>{
      if(snap.val()){
-       this.setState({restaurantData: snap.val()},()=>{
+      // this.setState({restaurantData: snap.val()},()=>{
+          var resData = snap.val();
          var dSSdata=[];
 
-         for(let i=0;i<this.state.restaurantData.length;i++) {
-           if(this.state.restaurantData[i].ratings){
-               let obj = this.state.restaurantData[i].ratings;
+         for(let i=0;i<resData.length;i++) {
+           if(resData[i].ratings){
+               let obj = resData[i].ratings;
                let rating = 0;
                let count = 0;
                for(let key in obj){
                    rating = rating + parseInt(obj[key].rate);
                    count++;
                }
-               this.state.restaurantData[i].user_rating = rating/count;
-               dSSdata.push(this.state.restaurantData[i]);
+               resData[i].user_rating = rating/count;
+               dSSdata.push(resData[i]);
            }else{
-             this.state.restaurantData[i].user_rating = 0;
-             dSSdata.push(this.state.restaurantData[i])
+            resData[i].user_rating = 0;
+             dSSdata.push(resData[i])
            }
      
        }
-       //this.setState({allvar: dSSdata});
+
        Actions.restaurant({mapdata: dSSdata});
 
-       })
      }
    })
 
 
  };
- openSearch = ()=>{
+ openSearch() {
     Actions.search();
  };
- openNews = ()=>{
+ openNews() {
     Actions.news();
  };
- openParking = ()=>{
+ openParking() {
     Actions.parking();
  };
- openSchedule = ()=>{
+ openSchedule() {
     Actions.programmeSchedule();
  };
+ goFeedback() {
+    Actions.feedback({Ttype: 'genfeed'});
+ }
 render() {
   return (
+    <View>
+        {
+        (this.state.logintype == "staff") ?
+        <CustomHeader Headershow={true} showFeedbackButton={true} onPressFeedback={()=>{this.goFeedback()}} headerName="Home" showSearchButton={false} showLogoutButton={true} showBackbutton= {false}/>
+        :
+        <CustomHeader Headershow={true} showFeedbackButton={false} onPressFeedback={()=>{this.goFeedback()}} headerName="Home" showSearchButton={false} showLogoutButton={true} showBackbutton= {false}/>
+        }
+        <View>
+        
+    </View>
     <View style={styles.container}>
-
+    
         <Image
             style={{width: width ,height: 200, top: 20}}
             source={require('../assets/images/homeBanner.jpg')}
         />
-        <ScrollView style={{height:(height-300), width: width, top: 20}}>
+        <ScrollView style={{height:(height-320), width: width, top: 20}}>
             <TouchableOpacity onPress={this.openAbout}>
                 <View style={styles.ListStyle}>
                     <Image
@@ -146,6 +188,7 @@ render() {
                 </View>
             </TouchableOpacity>
         </ScrollView>
+    </View>
     </View>
   );
 }

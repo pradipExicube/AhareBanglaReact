@@ -17,6 +17,7 @@ import StarRating from 'react-native-star-rating';
 import { Icon } from 'react-native-elements'
 import { Actions } from 'react-native-router-flux';
 import * as firebase from 'firebase';
+import CustomHeader from './common/CustomHeader';
 
 var {width,height} = Dimensions.get('window');
 
@@ -350,6 +351,8 @@ export default class RestaurantScreen extends Component {
     //   this.setState({allvar:this.props.mapdata},()=>{console.log("checking"); console.log(this.state.allvar); console.log("end..!")})
     // }
     return (
+      <View>
+        <CustomHeader Headershow={true} showFeedbackButton={false} headerName="Restaurant List" showSearchButton={true} showLogoutButton={true} showBackbutton= {false} onPressLogout={()=>{alert("Logout Clicked")}} onPressBack={()=>{alert("back icon Clicked")}}/>
       <ScrollView style={{width: width, height: height-135}}>
 
       {
@@ -465,8 +468,8 @@ export default class RestaurantScreen extends Component {
             (
                this.state.allvar ? 
                this.state.allvar.map((restaurants,key)=>{
-                  console.log('restaurantData');
-                  console.log(restaurants.restaurants_name);
+                  // console.log('restaurantData');
+                  // console.log(restaurants.restaurants_name);
            
               return(
       
@@ -618,6 +621,7 @@ export default class RestaurantScreen extends Component {
               </Modal>
 
       </ScrollView>
+      </View>
     );
   }
 }

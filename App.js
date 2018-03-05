@@ -16,6 +16,7 @@ import AboutPage from './src/components/AboutPage';
 import SearchPage from './src/components/SearchPage';
 import CommentPage from './src/components/CommentPage';
 import Feedback from './src/components/Feedback';
+import { MenuProvider } from 'react-native-popup-menu';
 
 export default class App extends Component {
   state = { loggedIn: true, logintype:'' };
@@ -34,16 +35,6 @@ export default class App extends Component {
       if(user){
         // firebase.auth().signOut();
           this.setState({ loggedIn: true });
-          let self = firebase.auth().currentUser.uid;
-          let checkref = firebase.database().ref('users/' + self);
-          checkref.once('value',(snap1)=>{
-          if(snap1.val()){
-            let data = snap1.val();
-            if(data.usertype){
-              this.setState({logintype: data.usertype},()=>{console.log(this.state.logintype)});
-            }
-          }
-        })
       }else{
           this.setState({ loggedIn: false });
       }
@@ -52,39 +43,32 @@ export default class App extends Component {
     
 
   }
-  onPress() {
-    Actions.feedback({Ttype: 'genfeed'});
-  }
-
+  
   authenticateUser() {
     if (this.state.loggedIn == true) {
       console.log("We are authenticated now!");
       return (
+        <MenuProvider>
         <Router>
           <Scene key='root'>
             <Tabs key="root" tabs={true} tabBarPosition="bottom" tabBarStyle={styles.tabBar}>
-                {
-                (this.state.logintype == "staff") ?
-               
-                <Scene key="home" initial={true} title="Home" onRight={ ()=> {this.onPress()} } rightTitle={'FEEDBACK'} component={HomeScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} style={{color:'red'}} headerTintColor='#fff'/>
-                : 
-                <Scene key="home" initial={true} title="Home" component={HomeScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} style={{color:'red'}} headerTintColor='#fff'/>
-              }
-                <Scene key="map" title="Map" component={MapScreen} navigationBarStyle={{backgroundColor:'#005696',}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
-                <Scene key="restaurant"  title="Restaurant" component={RestaurantScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
-                <Scene key="news"  title="News" component={NewsScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
+                <Scene key="home" initial={true} hideNavBar={true} title="Home" component={HomeScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} style={{color:'red'}} headerTintColor='#fff'/>
+                <Scene key="map" hideNavBar={true} title="Map" component={MapScreen} navigationBarStyle={{backgroundColor:'#005696',}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
+                <Scene key="restaurant" hideNavBar={true} title="Restaurant" component={RestaurantScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
+                <Scene key="news" hideNavBar={true} title="News" component={NewsScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
             </Tabs>
             <Scene key="programmeSchedule" title="Programme Schedule"  component={ProgrammeSchedule} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
             <Scene key="parking" title="Parking"  component={Parking} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
-            <Scene key="foodmenu" title="Food Menu"  component={FoodMenu} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
-            <Scene key="subcategory" title="Sub Category"  component={SubCategory} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
-            <Scene key="foodlist" title="Food Menu List"  component={FoodMenuList} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
+            <Scene key="foodmenu" hideNavBar={true} title="Food Menu"  component={FoodMenu} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
+            <Scene key="subcategory" hideNavBar={true} title="Sub Category"  component={SubCategory} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
+            <Scene key="foodlist" hideNavBar={true} title="Food Menu List"  component={FoodMenuList} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
             <Scene key="about" title="About"  component={AboutPage} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
             <Scene key="search" title="Search"  component={SearchPage} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
-            <Scene key="comment" title="Comment"  component={CommentPage} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
+            <Scene key="comment" hideNavBar={true} title="Comment"  component={CommentPage} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
             <Scene key="feedback" title="Staff Review"  component={Feedback} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
           </Scene>    
         </Router>
+        </MenuProvider>
       );
     }
     else {

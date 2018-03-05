@@ -13,6 +13,7 @@ import { Icon } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 var {width,height} = Dimensions.get('window');
 import * as firebase from 'firebase';
+import CustomHeader from './common/CustomHeader';
 
 export default class FoodMenu extends Component {
     // console.log(props.data.restaurants_name);
@@ -67,8 +68,16 @@ export default class FoodMenu extends Component {
     }
     render() {
   return (
-    <View style={styles.containerStyle}>
 
+        
+    <View style={styles.containerStyle}>
+    {
+        this.props.resName ?
+        <CustomHeader Headershow={true} showFeedbackButton={false} onPressFeedback={()=>{this.goFeedback()}} headerName={this.props.resName} showSearchButton={false} showLogoutButton={true} showBackbutton= {true}/>
+        :
+        <CustomHeader Headershow={true} showFeedbackButton={false} onPressFeedback={()=>{this.goFeedback()}} headerName={this.props.data.restaurants_name} showSearchButton={false} showLogoutButton={true} showBackbutton= {true}/>
+    }
+        
 
     {
         (this.state.notFound==true) ?
@@ -123,6 +132,7 @@ export default class FoodMenu extends Component {
             source={require('../assets/images/innerPlate2.png')}
         />  
     </View>
+
   );
 }
 }

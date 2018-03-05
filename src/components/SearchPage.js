@@ -44,7 +44,7 @@ foodSearch(reskey) {
         console.log(this.state.seachtype);
         console.log(this.state.restaurantName);
         console.log(this.state.restaurantIndex);
-        Actions.popAndPush('foodmenu',({id: reskey}));
+        Actions.popAndPush('foodmenu',({id: reskey, resName: this.state.restaurantName}));
     }
     else{
         console.log(this.state.seachtype);

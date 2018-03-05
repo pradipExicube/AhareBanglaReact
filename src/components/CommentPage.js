@@ -10,6 +10,7 @@ import {
   Button
 } from 'react-native';
 import * as firebase from 'firebase';
+import CustomHeader from './common/CustomHeader';
 
 var {width,height} = Dimensions.get('window');
 
@@ -119,6 +120,8 @@ export default class CommentPage extends Component {
 
     render() {
         return (
+            <View>
+                <CustomHeader Headershow={true} showFeedbackButton={false} onPressFeedback={()=>{this.goFeedback()}} headerName='Comments' showSearchButton={false} showLogoutButton={true} showBackbutton= {true}/>
             <View style={{height: height-80, 
             flexDirection: 'column', 
             justifyContent: 'space-between'
@@ -175,6 +178,7 @@ export default class CommentPage extends Component {
                         />
                     </View>
                 </View>
+            </View>
             </View>
         );
     }

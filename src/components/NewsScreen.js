@@ -14,6 +14,7 @@ import Card from './common/Card';
 import CardSection from './common/CardSection';
 import { Icon } from 'react-native-elements';
 import * as firebase from 'firebase';
+import CustomHeader from './common/CustomHeader';
 
 var {width,height} = Dimensions.get('window');
 
@@ -96,6 +97,8 @@ renderNewsData() {
   */
   render() {
     return (
+      <View>
+        <CustomHeader Headershow={true} showFeedbackButton={false} headerName="Latest News" showSearchButton={false} showLogoutButton={true} showBackbutton= {false} onPressLogout={()=>{alert("Logout Clicked")}} onPressBack={()=>{alert("back icon Clicked")}}/>
       <ScrollView style={{width: width, height: height-135}}>
 
       {
@@ -155,6 +158,7 @@ renderNewsData() {
 
   }
       </ScrollView>
+      </View>
 
     );
   }

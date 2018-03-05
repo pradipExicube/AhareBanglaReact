@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import * as firebase from 'firebase';
+import CustomHeader from './common/CustomHeader';
 
 var {width,height} = Dimensions.get('window');
 export default class MapScreen extends Component {
@@ -136,6 +137,8 @@ export default class MapScreen extends Component {
   }
   render() { 
     return (
+      <View>
+        <CustomHeader Headershow={true} showFeedbackButton={false} headerName="Map" showSearchButton={false} showLogoutButton={false} showBackbutton= {false} onPressLogout={()=>{alert("Logout Clicked")}} onPressBack={()=>{alert("back icon Clicked")}}/>       
         <ScrollView>
           <ScrollView horizontal>
           <TouchableOpacity onPress={(event)=>{this.goRestaurant(event)}}>
@@ -146,6 +149,7 @@ export default class MapScreen extends Component {
           </TouchableOpacity>
           </ScrollView>
       </ScrollView>
+      </View>
     );
   }
 }

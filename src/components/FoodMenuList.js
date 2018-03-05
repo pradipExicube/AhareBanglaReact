@@ -14,6 +14,7 @@ import StarRating from 'react-native-star-rating';
 import { Actions } from 'react-native-router-flux';
 import * as firebase from 'firebase';
 import StarRate from './common/StarRating';
+import CustomHeader from './common/CustomHeader';
 
 var {width,height} = Dimensions.get('window');
 
@@ -94,7 +95,9 @@ onStarRatingPress(rating) {
 
  render() {
     return (
-        <ScrollView style={{ top: 10, bottom: 30, height:(height), width: width }}>
+        <View>
+            <CustomHeader Headershow={true} showFeedbackButton={false} onPressFeedback={()=>{this.goFeedback()}} headerName='Menu' showSearchButton={false} showLogoutButton={true} showBackbutton= {true}/>
+        <ScrollView style={{ height:(height-80), width: width }}>
 
         {
          
@@ -229,6 +232,7 @@ onStarRatingPress(rating) {
         </Modal>
 
         </ScrollView>
+        </View>
         
         );      
     }

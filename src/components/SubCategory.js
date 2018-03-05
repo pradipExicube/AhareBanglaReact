@@ -11,6 +11,7 @@ import {
 import Card from './common/Card';
 import { Icon } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
+import CustomHeader from './common/CustomHeader';
 var {width,height} = Dimensions.get('window');
 export default class SubCategory extends Component {
     constructor(props) {
@@ -27,6 +28,8 @@ export default class SubCategory extends Component {
     }
     render() {
         return (
+            <View>
+                <CustomHeader Headershow={true} showFeedbackButton={false} onPressFeedback={()=>{this.goFeedback()}} headerName='Sub Category List' showSearchButton={false} showLogoutButton={true} showBackbutton= {true}/>
             <ScrollView style={{ height:(height-100), width: width }}>
             {      
                     this.props.data.subcategory ? 
@@ -71,6 +74,7 @@ export default class SubCategory extends Component {
                     source={require('../assets/images/innerPlate2.png')}
                 />  
             </ScrollView>
+            </View>
         );
     }
 }
