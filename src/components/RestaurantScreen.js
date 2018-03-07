@@ -120,6 +120,10 @@ export default class RestaurantScreen extends Component {
     }
 
   }
+
+  componentWillUnmount() {
+    console.log('component will unmount .....')
+  }
   
   renderMapData(arr) {
     this.setState({allvar: arr});

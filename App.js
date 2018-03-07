@@ -56,7 +56,7 @@ export default class App extends Component {
         <Router>
           <Scene key='root'>
           <Scene key="Login" title="Login Page" hideNavBar={true}  component={LoginPage} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
-            <Tabs key="tabs" lazy={true} tabs={true} tabBarPosition="bottom" tabBarStyle={styles.tabBar}>
+            <Tabs key="tabs" lazy={true} tabs={true} tabStyle={{borderWidth: 1, borderColor: 'rgba(0, 86, 150, 0.3)'}} activeBackgroundColor={'#005696'} labelStyle={{color: '#fff', paddingBottom: 12, fontSize: 15}} tabBarPosition="bottom" tabBarStyle={styles.tabBar}>
                 <Scene key="home" initial={true} hideNavBar={true} title="Home" component={HomeScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} style={{color:'red'}} headerTintColor='#fff'/>
                 <Scene key="map" hideNavBar={true} title="Map" component={MapScreen} navigationBarStyle={{backgroundColor:'#005696',}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
                 <Scene key="restaurant"  hideNavBar={true} title="Restaurant" component={RestaurantScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     top: 23,
   },
   tabBar: {
-    backgroundColor: '#005696',
+    backgroundColor: '#008bf2',
     marginBottom: 23
   },
 });
