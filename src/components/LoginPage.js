@@ -9,8 +9,10 @@ import {
   TouchableOpacity,
   Alert,
   Modal,
-  TextInput
+  TextInput,
+  ActivityIndicator
 } from 'react-native';
+import { Actions } from 'react-native-router-flux';
 import { Facebook, Google } from 'expo';
 import firebase from 'firebase';
 import { Button } from 'react-native-elements'
@@ -22,7 +24,8 @@ export default class LoginPage extends Component {
     this.state = {
       modalVisible: false,
       staffEmail: '',
-      staffPass: ''
+      staffPass: '',
+      showloading:false,
     }
   }
 
@@ -41,7 +44,7 @@ export default class LoginPage extends Component {
               permissions: ['public_profile','email', 'user_friends'],
               behavior:'web'
               });
-              
+              this.setState({showloading:true});
           if (type === 'success') {
               console.log(token);
               const credential = await firebase.auth.FacebookAuthProvider.credential(token);
@@ -56,14 +59,16 @@ export default class LoginPage extends Component {
                   facebookToken: token,
                   logintype:"facebook",
                   usertype:"basic"
-                });
+                }).then((success)=>{this.setState({showloading:false}); Actions.reset('tabs')})
               })
               .catch(() => {
+                this.setState({showloading:false});
               console.log("error");
               });
-              console.log(response)
+              //console.log(response)
           }
           else{
+              this.setState({showloading:false});
               alert("success false");
           }
       }catch(e){
@@ -85,6 +90,7 @@ export default class LoginPage extends Component {
             scopes: ['profile', 'email'],
             behavior:'web'
           });
+          this.setState({showloading:true});
           if (result.type === 'success') {
             //console.log("result");
             const credential = await firebase.auth.GoogleAuthProvider.credential(result.idToken);
@@ -102,14 +108,16 @@ export default class LoginPage extends Component {
                   googleToken: result.idToken,
                   logintype: "google",
                   usertype: "basic"
-                });	 
+                }).then((success)=>{this.setState({showloading:false});Actions.reset('tabs')})
               })
               .catch(() => {
               console.log("error");
+              this.setState({showloading:false});
               });
               console.log(response);
             } 
           else {
+            this.setState({showloading:false});
             console.log(result);
           }
         } catch(e) {
@@ -117,192 +125,165 @@ export default class LoginPage extends Component {
         }
       }
 
-    async staffLogin() {
+    staffLogin = async () => {
+      // this.setState({showloading:true});
       // loginWithStaff(email, password)
-        await firebase.auth().signInWithEmailAndPassword(this.state.staffEmail, this.state.staffPass).then((authenticatedUser) => {
-          firebase.database().ref('users').child(authenticatedUser.uid + '/logintype/').set("basic");	
-          firebase.database().ref('users').child(authenticatedUser.uid + '/usertype/').set("staff");	
-          firebase.database().ref('users').child(authenticatedUser.uid + '/userimage/').set('https://firebasestorage.googleapis.com/v0/b/aharebangla-6f646.appspot.com/o/default_user%2Fuser.png?alt=media&token=fd2a04a7-8839-43b4-916e-b4bca9a4106e')
-        })
-      this.setState({modalVisible: false})
+          this.setState({showloading:true,modalVisible: false});
+          await firebase.auth().signInWithEmailAndPassword(this.state.staffEmail, this.state.staffPass)
+            .then((authenticatedUser) => {
+              if(authenticatedUser){
+                console.log("Authenticate user found..")
+                firebase.database().ref('users').child(authenticatedUser.uid + '/logintype/')
+                .set("basic");	
+                firebase.database().ref('users').child(authenticatedUser.uid + '/usertype/')
+                .set("staff");	
+                firebase.database().ref('users').child(authenticatedUser.uid + '/userimage/')
+                .set('https://firebasestorage.googleapis.com/v0/b/aharebangla-6f646.appspot.com/o/default_user%2Fuser.png?alt=media&token=fd2a04a7-8839-43b4-916e-b4bca9a4106e')
+                .then(()=>{
+                  Actions.reset('tabs')
+                })
+              }else{
+                console.log("Authenticate user not found..")
+              }
+
+
+                
+          }).catch((error)=>{this.setState({showloading:false}); console.log("error found.." + error)})
+        
+
+
     
       }
+
+      /*        {this.state.showloading ? 
+          <View style={[styles.loadingcontainer, styles.loadinghorizontal]}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View> 
+          :null       
+        }*/
  
   render() {
     return (
-      <View
-        style={{
-          flex: 1,
-        }}
-      >
-
-        <View
-          style={{
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-          }}
-        >
-          <Image
-            style={{
-            width: '100%',
-            height: '100%',
-            }}
-            source={require('../assets/images/loginBg.jpg')}
-          />
-        </View>
-
-        <View
-          style={{
-            top: (height-(height-80)),
-            backgroundColor: 'transparent',
-          }}
-        >
-          <Image
-            style={{
-            width: '100%',
-            height: 80,
-            }}
-            source={require('../assets/images/loginPlateBar.jpg')}
-          />
-        </View>
-
-        <TouchableOpacity style={styles.fbbutton} 
-            onPress={()=> {this.FBlogIn()} }
-        >
-            <Image style={styles.buttonImageStyle}
-                source={require('../assets/images/facebookImg.png')}/>
-            <Text style={styles.buttonTextStyle}>Sign In With Facebook</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.googlebutton} 
-            onPress={()=>{this.GooglelogIn()}}
-        >
-            <Image style={styles.buttonImageStyle}
-                   source={require('../assets/images/googlePlusImg.png')}/>
-            <Text style={styles.buttonTextStyle}>Sign In With Google</Text>
-        </TouchableOpacity>
-
-        <View
-          style={{
-            top: (height-505),
-            justifyContent: 'center',
-            alignItems: 'center',   
-            backgroundColor: 'transparent',
-          }}
-        >
-          <Image
-            style={{
-            justifyContent: 'center',
-            alignItems: 'center',    
-            width: '80%',
-            height: 220,
-            }}
-            source={require('../assets/images/loginPlate.png')}
-          />
-        </View>
-
-        <View
-          style={{
-            backgroundColor: 'transparent',
-            left:17,
-            position:'absolute',
-            bottom: (height-(height-37))
-          }}
-        >
-            <TouchableOpacity onPress={()=>{this.openModal()}}>
-                <Text style={styles.staffLoginText}>Staff Login</Text>
-            </TouchableOpacity>
-        </View>
-
-        <Modal
-            visible={this.state.modalVisible}
-            animationType={'slide'}
-            transparent={true}
-            onRequestClose={() => this.closeModal()}
-        >
-          <View style={styles.modalContainer}>
-          {/* <StarRate /> */}
-            <View style={styles.innerContainer}>
-            <View style={{
-              backgroundColor: '#005696',
-              width: '100%',
-              height: 50,
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderTopLeftRadius: 5,
-              borderTopRightRadius: 5
-            }}>
-              <Text style={{
-                alignSelf: 'center',
-                color: '#fff',
-                fontSize: 20,
-                fontWeight: 'bold'
-              }}>Staff Login</Text>
-              </View>
-              <View style={{
-                  width: '80%',
-                  borderBottomWidth: 1,
-                  borderBottomColor: 'rgba(0, 86, 150, 0.3)',           
-                  backgroundColor: '#fff', 
-                  marginTop: 10,
-                  margin: 20,
-                  height: 40
-              }}>
-                <TextInput
-                    style={{padding: 10, fontSize: 15}}
-                    placeholder="Please Enter Email"
-                    underlineColorAndroid='transparent'
-                    placeholderTextColor='#ddd'
-                    onChangeText={(text) => this.setState({staffEmail: text})}
+        <View style={{ flex: 1, }} >
+            <View style={{ position: 'absolute', width: '100%', height: '100%', }} >
+                <Image style={{ width: '100%', height: '100%', }}
+                source={require('../assets/images/loginBg.jpg')}
                 />
-              </View>
-              <View style={{
-                  width: '80%',
-                  borderBottomWidth: 1,
-                  borderBottomColor: 'rgba(0, 86, 150, 0.3)',           
-                  backgroundColor: '#fff', 
-                  marginTop: 10,
-                  margin: 20,
-                  height: 40
-              }}>
-                <TextInput
-                    style={{padding: 10, fontSize: 15}}
-                    placeholder="Please Enter Password"
-                    underlineColorAndroid='transparent'
-                    placeholderTextColor='#ddd'
-                    secureTextEntry={true}
-                    onChangeText={(text) => this.setState({staffPass: text})}
-                />
-              </View>
-              <View style={{flexDirection: 'row', alignSelf:'flex-end', justifyContent: 'flex-end'}}>
-                <Button
-                  small
-                  backgroundColor='#fff'
-                  color='#005696'
-                  fontSize={13}
-                  textStyle={{fontWeight: 'bold'}}
-                  onPress={()=>{this.closeModal()}}
-                  title='Cancel' />
-                <Button
-                  small
-                  backgroundColor='#fff'
-                  color='#005696'
-                  fontSize={13}
-                  textStyle={{fontWeight: 'bold'}}
-                  onPress={()=>{this.staffLogin()}}
-                  title='Login' />
-              </View>
-              
             </View>
-          </View>
-        </Modal>
 
-      </View>
+            <View style={{ top: (height-(height-80)), backgroundColor: 'transparent', }}>
+                <Image
+                style={{ width: '100%', height: 80, }}
+                source={require('../assets/images/loginPlateBar.jpg')}
+                />
+            </View>
+
+            <TouchableOpacity style={styles.fbbutton} 
+                onPress={()=> {this.FBlogIn()} }
+            >
+                <Image style={styles.buttonImageStyle}
+                    source={require('../assets/images/facebookImg.png')}/>
+                <Text style={styles.buttonTextStyle}>Sign In With Facebook</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.googlebutton} 
+                onPress={()=>{this.GooglelogIn()}}
+            >
+                <Image style={styles.buttonImageStyle}
+                source={require('../assets/images/googlePlusImg.png')}/>
+                <Text style={styles.buttonTextStyle}>Sign In With Google</Text>
+            </TouchableOpacity>
+                  {this.state.showloading ? 
+                    <View style={{position:'absolute', alignSelf:'center',top:((height + 44)/2)}}>
+                      <View style={[styles.loadingcontainer, styles.loadinghorizontal]}>
+                          <ActivityIndicator size="large" color="#0000ff" />
+                      </View>  
+                      </View>
+                    :null        
+                    }
+            <View
+                style={{ top: (height-505), justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent'}}>
+                <Image
+                style={{ justifyContent: 'center', alignItems: 'center', width: '80%', height: 220}}
+                source={require('../assets/images/loginPlate.png')}
+                />
+            </View>
+
+            <View style={{backgroundColor: 'transparent',left:17,position:'absolute',bottom: (height-(height-37))}}>
+                <TouchableOpacity onPress={()=>{this.openModal()}}>
+                    <Text style={styles.staffLoginText}>Staff Login</Text>
+                </TouchableOpacity>
+            </View>
+
+            <Modal
+                visible={this.state.modalVisible}
+                animationType={'slide'}
+                transparent={true}
+                onRequestClose={() => this.closeModal()}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.innerContainer}>
+                        <View style={{ backgroundColor: '#005696',width: '100%',height: 50,justifyContent: 'center',alignItems: 'center',borderTopLeftRadius: 5,borderTopRightRadius: 5 }}>
+                            <Text style={{alignSelf: 'center',color: '#fff',fontSize: 20,fontWeight: 'bold'}}>Staff Login</Text>
+                        </View>
+                        <View style={{width: '80%',borderBottomWidth: 1,borderBottomColor: 'rgba(0, 86, 150, 0.3)',backgroundColor:'#fff', marginTop: 10,margin: 20,height: 40}}>
+                            <TextInput
+                                style={{padding: 10, fontSize: 15}}
+                                placeholder="Please Enter Email"
+                                underlineColorAndroid='transparent'
+                                placeholderTextColor='#ddd'
+                                onChangeText={(text) => this.setState({staffEmail: text})}
+                            />
+                        </View>
+                        <View style={{width: '80%',borderBottomWidth: 1,borderBottomColor: 'rgba(0, 86, 150, 0.3)',backgroundColor: '#fff', marginTop: 10,margin: 20,height: 40}}>
+                            <TextInput
+                                style={{padding: 10, fontSize: 15}}
+                                placeholder="Please Enter Password"
+                                underlineColorAndroid='transparent'
+                                placeholderTextColor='#ddd'
+                                secureTextEntry={true}
+                                onChangeText={(text) => this.setState({staffPass: text})}
+                            />
+                        </View>
+                        <View style={{flexDirection: 'row', alignSelf:'flex-end', justifyContent: 'flex-end'}}>
+                            <Button
+                                small
+                                backgroundColor='#fff'
+                                color='#005696'
+                                fontSize={13}
+                                textStyle={{fontWeight: 'bold'}}
+                                onPress={()=>{this.closeModal()}}
+                                title='Cancel' />
+                            <Button
+                                small
+                                backgroundColor='#fff'
+                                color='#005696'
+                                fontSize={13}
+                                textStyle={{fontWeight: 'bold'}}
+                                onPress={()=>{this.staffLogin()}}
+                                title='Login' />
+                        </View>
+
+                    </View>
+                </View>
+            </Modal>
+
+        </View>
     );
   }
 }
 const styles = StyleSheet.create({
+    loadingcontainer: {
+      flex: 1,
+      justifyContent: 'center',
+      //top:30
+      //position:'absolute',
+    },
+    loadinghorizontal: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      padding: 10
+    },
     fbbutton: {
         margin:15,
         height:55,

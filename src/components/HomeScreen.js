@@ -57,6 +57,9 @@ export default class HomeScreen extends Component {
  openRestaurant() {
    // Actions.restaurant();
 
+
+   
+
    let ref = firebase.database().ref('rastaurants');
    ref.on('value',(snap)=>{
      if(snap.val()){
@@ -86,6 +89,9 @@ export default class HomeScreen extends Component {
 
      }
    })
+
+
+
 
 
  };

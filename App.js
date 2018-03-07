@@ -1,5 +1,5 @@
 import React,{ Component } from 'react';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView,ActivityIndicator } from 'react-native';
 import { Router, Scene, Tabs, Stack, Actions } from 'react-native-router-flux';
 import HomeScreen from './src/components/HomeScreen';
 import MapScreen from './src/components/MapScreen';
@@ -19,7 +19,7 @@ import Feedback from './src/components/Feedback';
 import { MenuProvider } from 'react-native-popup-menu';
 
 export default class App extends Component {
-  state = { loggedIn: true, logintype:'' };
+  state = { loggedIn: true, logintype:'', showloading:true };
   componentWillMount() {
     // Initialize Firebase
     var config = {
@@ -33,10 +33,14 @@ export default class App extends Component {
     firebase.initializeApp(config);
     firebase.auth().onAuthStateChanged((user)=>{
       if(user){
-        // firebase.auth().signOut();
-          this.setState({ loggedIn: true });
+          // firebase.auth().signOut();
+          // this.setState({ loggedIn: true });
+          this.setState({showloading:false});
+          Actions.reset('tabs');
       }else{
-          this.setState({ loggedIn: false });
+          this.setState({showloading:false});
+          // this.setState({ loggedIn: false });
+          // Actions.reset('Login');
       }
     });
 
@@ -45,18 +49,20 @@ export default class App extends Component {
   }
   
   authenticateUser() {
-    if (this.state.loggedIn == true) {
-      console.log("We are authenticated now!");
+    // if (this.state.loggedIn == true) {
+    //   console.log("We are authenticated now!");
       return (
         <MenuProvider>
         <Router>
           <Scene key='root'>
-            <Tabs key="root" tabs={true} tabBarPosition="bottom" tabBarStyle={styles.tabBar}>
+          <Scene key="Login" title="Login Page" hideNavBar={true}  component={LoginPage} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
+            <Tabs key="tabs" lazy={true} tabs={true} tabBarPosition="bottom" tabBarStyle={styles.tabBar}>
                 <Scene key="home" initial={true} hideNavBar={true} title="Home" component={HomeScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} style={{color:'red'}} headerTintColor='#fff'/>
                 <Scene key="map" hideNavBar={true} title="Map" component={MapScreen} navigationBarStyle={{backgroundColor:'#005696',}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
-                <Scene key="restaurant" hideNavBar={true} title="Restaurant" component={RestaurantScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
-                <Scene key="news" hideNavBar={true} title="News" component={NewsScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
+                <Scene key="restaurant"  hideNavBar={true} title="Restaurant" component={RestaurantScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
+                <Scene key="news"  hideNavBar={true} title="News" component={NewsScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
             </Tabs>
+            
             <Scene key="programmeSchedule" title="Programme Schedule"  component={ProgrammeSchedule} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
             <Scene key="parking" title="Parking"  component={Parking} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
             <Scene key="foodmenu" hideNavBar={true} title="Food Menu"  component={FoodMenu} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
@@ -70,25 +76,43 @@ export default class App extends Component {
         </Router>
         </MenuProvider>
       );
-    }
-    else {
-      console.log("loginpage");
-      return (
-        <LoginPage />
-      );
-    }
+    // }
+    // else {
+    //   console.log("loginpage");
+    //   return (
+    //     <LoginPage />
+    //   );
+    // }
   }
 
   render() {
-    return (
-      <View style={styles.container}>
-        {this.authenticateUser()}
-      </View>
-    );
+    if(this.state.showloading){
+      return (
+          <View style={[styles.loadingcontainer, styles.loadinghorizontal]}>
+          <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+      )
+    }else{
+      return (
+        <View style={styles.container}>
+          {this.authenticateUser()}
+        </View>
+      )
+    }
+
   }
 }
 
 const styles = StyleSheet.create({
+  loadingcontainer: {
+    flex: 1,
+    justifyContent: 'center'
+  },
+  loadinghorizontal: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10
+  },
   container: {
     flex: 1,
     top: 23,

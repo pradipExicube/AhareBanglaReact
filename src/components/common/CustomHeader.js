@@ -90,7 +90,11 @@ const CustomHeader = ({
  }
  }
  logout=()=>{
-    firebase.auth().signOut();
+    firebase.auth().signOut().then(()=>{
+        // Actions.reset('login')
+        Actions.reset('Login');
+    })
+    
  }
  showSearch=()=>{
     if(showSearchButton){
