@@ -83,7 +83,15 @@ export default class FoodMenu extends Component {
         (this.state.notFound==true) ?
     (
         <Image
-            style={styles.cardImage}
+            style={{
+                position: 'absolute',
+                height: 200,
+                width: 200,
+                resizeMode: 'contain',
+                top:(height-(height-100)),
+                alignSelf: 'center',
+                backgroundColor: 'transparent'
+            }}
             source={{uri: this.state.notfoundimage}}
         /> 
     )
@@ -128,7 +136,7 @@ export default class FoodMenu extends Component {
 
         <Image
             style={styles.backgroundImage}
-            resizeMode='contain'
+            resizeMode='stretch'
             source={require('../assets/images/innerPlate2.png')}
         />  
     </View>
