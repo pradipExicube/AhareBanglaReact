@@ -163,34 +163,29 @@ export default class CommentPage extends Component {
                 </ScrollView>
                 <View style={{width: width, flexDirection: 'row', marginTop: 5, marginLeft: 10,marginRight: 10}}>
                     <View style={{width: '70%'}}>
-                    <TextInput
-                        style={{height: 50, padding: 10, fontSize: 15, backgroundColor: 'rgba(0, 86, 150, 0.2)'}}
-                        placeholder="Add a Message..."
-                        underlineColorAndroid='transparent'
-                        placeholderTextColor='#000'
-                        value={this.state.newComment}
-                        onChangeText={(text) => this.setState({newComment: text})}
-                    />
-                    </View>
-                    {/* <View style={{ alignSelf:'flex-end'}}> */}
-                        {/* <Button
-                            onPress={()=>{this.sendMessage();}}
-                            title="Submit"
-                            color="#012f51"
-                        /> */}
-                        <Button
-                            small
-                            containerViewStyle={{marginLeft: 0,marginRight:0,width: '25%', }}
-                            buttonStyle={{height: 50,}}
-                            raised
-                            backgroundColor='#012f51'
-                            color="#fff"
-                            fontSize={15}
-                            textStyle={{fontWeight: 'bold'}}
-                            onPress={()=>{this.sendMessage();}}
-                            title="Submit" 
+                        <TextInput
+                            style={{height: 50, padding: 10, fontSize: 15, backgroundColor: 'rgba(0, 86, 150, 0.2)'}}
+                            placeholder="Add a Message..."
+                            underlineColorAndroid='transparent'
+                            placeholderTextColor='#000'
+                            value={this.state.newComment}
+                            onChangeText={(text) => this.setState({newComment: text})}
                         />
-                    {/* </View> */}
+                    </View>
+                    
+                    <Button
+                        small
+                        containerViewStyle={{marginLeft: 0,marginRight:0,width: '25%', }}
+                        buttonStyle={{height: 50,}}
+                        raised
+                        backgroundColor='#012f51'
+                        color="#fff"
+                        fontSize={15}
+                        textStyle={{fontWeight: 'bold'}}
+                        onPress={()=>{this.sendMessage();}}
+                        title="Submit" 
+                    />
+                    
                 </View>
             </View>
             </View>

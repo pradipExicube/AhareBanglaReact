@@ -51,10 +51,10 @@ export default class NewsScreen extends Component {
         <CustomHeader Headershow={true} showFeedbackButton={false} headerName="Latest News" showSearchButton={false} showLogoutButton={true} showBackbutton= {false} onPressLogout={()=>{alert("Logout Clicked")}} onPressBack={()=>{alert("back icon Clicked")}}/>
         {
           this.state.showloading ? 
-            (<View style={{position:'absolute', alignSelf:'center',top:((height)/2)}}>
-              <View style={[styles.loadingcontainer, styles.loadinghorizontal]}>
-                  <ActivityIndicator size="large" color="#0000ff" />
-              </View>  
+            (<View style={{position:'absolute', alignSelf:'center',top:((height-100)/2)}}>
+                <View style={[styles.loadingcontainer, styles.loadinghorizontal]}>
+                    <ActivityIndicator size="large" color="#0000ff" />
+                </View>  
               </View>)
             :        
             
