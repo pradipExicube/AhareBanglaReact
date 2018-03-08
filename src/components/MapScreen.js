@@ -6,7 +6,7 @@ import {
   Dimensions,
   Image,
   ScrollView,
-  TouchableOpacity
+  TouchableWithoutFeedback
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import * as firebase from 'firebase';
@@ -141,12 +141,12 @@ export default class MapScreen extends Component {
         <CustomHeader Headershow={true} showFeedbackButton={false} headerName="Map" showSearchButton={false} showLogoutButton={false} showBackbutton= {false} onPressLogout={()=>{alert("Logout Clicked")}} onPressBack={()=>{alert("back icon Clicked")}}/>       
         <ScrollView>
           <ScrollView horizontal>
-          <TouchableOpacity onPress={(event)=>{this.goRestaurant(event)}}>
+          <TouchableWithoutFeedback onPress={(event)=>{this.goRestaurant(event)}}>
             <Image
               style={{width: 2616 ,height: 628,}}
               source={require('../assets/images/map.jpg')}
             />
-          </TouchableOpacity>
+          </TouchableWithoutFeedback>
           </ScrollView>
       </ScrollView>
       </View>

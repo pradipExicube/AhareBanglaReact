@@ -8,7 +8,8 @@ import {
   TouchableWithoutFeedback,
   ScrollView,
   Linking,
-  Share
+  Share,
+  ActivityIndicator
 } from 'react-native';
 import Card from './common/Card';
 import CardSection from './common/CardSection';
@@ -22,7 +23,8 @@ export default class NewsScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      newsData:[]
+      newsData:[],
+      showloading: true,
     }
     
   }
@@ -30,7 +32,7 @@ export default class NewsScreen extends Component {
     let ref = firebase.database().ref('news');
     ref.once('value',(snap)=>{
       if(snap.val()){
-        this.setState({newsData:snap.val()})
+        this.setState({newsData:snap.val(), showloading:  false,})
       }
     })
   }
@@ -42,64 +44,21 @@ export default class NewsScreen extends Component {
     )
     console.log('click end.....');
   }
-/*  
-renderNewsData() {
-    this.state.newsData.map((news,key)=>{
-      console.log('newsData');
-      console.log(news);
-    return(
-      <Card key={key}>
-        <TouchableWithoutFeedback onPress={()=>{Linking.openURL(news.url)}}>
-          <View style={{ margin: 10 }}>
-            <Image
-              style={styles.ImageStyle}
-              source={{uri: "{news.img}"}}
-            />
-          </View>
-        </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback onPress={()=>{Linking.openURL(news.url)}}>
-          <View style={styles.textStyle}>
-            <Text style={styles.newsHeading}>{news.head}</Text>
-            <Text style={styles.newsContent}>{news.desc}</Text>
-          </View>
-        </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback onPress={()=>{alert('sharebutton')}}>
-          <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-            <Icon
-              name='md-share'
-              type='ionicon'
-              color='#005696'
-              size= {20}
-              containerStyle = {{ 
-                marginLeft: 17, 
-                marginBottom: 10, 
-                marginRight: 6 
-              }}
-              onPress={() => alert('share')} 
-            />
-            <Text style={
-              [styles.newsHeading,
-                { 
-              marginRight: 10, 
-              marginBottom: 10, 
-              fontWeight: 'bold' 
-              }]}
-            >
-              SHARE</Text>
-          </View>
-        </TouchableWithoutFeedback>
-      </Card>
-    )
 
-    })
-  // }
-  }
-  */
   render() {
     return (
       <View>
         <CustomHeader Headershow={true} showFeedbackButton={false} headerName="Latest News" showSearchButton={false} showLogoutButton={true} showBackbutton= {false} onPressLogout={()=>{alert("Logout Clicked")}} onPressBack={()=>{alert("back icon Clicked")}}/>
-      <ScrollView style={{width: width, height: height-135}}>
+        {
+          this.state.showloading ? 
+            (<View style={{position:'absolute', alignSelf:'center',top:((height)/2)}}>
+              <View style={[styles.loadingcontainer, styles.loadinghorizontal]}>
+                  <ActivityIndicator size="large" color="#0000ff" />
+              </View>  
+              </View>)
+            :        
+            
+      (<ScrollView style={{width: width, height: height-135}}>
 
       {
         this.state.newsData ? 
@@ -157,7 +116,8 @@ renderNewsData() {
     : null
 
   }
-      </ScrollView>
+      </ScrollView>)
+        }
       </View>
 
     );
@@ -182,5 +142,14 @@ const styles = StyleSheet.create({
   },
   newsContent: {
     fontSize: 16,
-  }
+  },
+  loadingcontainer: {
+    flex: 1,
+    justifyContent: 'center'
+  },
+  loadinghorizontal: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10
+  },
 });
