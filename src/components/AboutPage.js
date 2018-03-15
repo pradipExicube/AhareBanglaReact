@@ -71,7 +71,8 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
   loadingcontainer: {
-    justifyContent: 'center'
+    flex: 1,
+    justifyContent: 'center',
   },
   loadinghorizontal: {
     flexDirection: 'row',

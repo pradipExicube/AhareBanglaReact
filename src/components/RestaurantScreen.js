@@ -8,7 +8,8 @@ import {
   ScrollView,
   Dimensions,
   Modal,
-  Share
+  Share,
+  ActivityIndicator
 } from 'react-native';
 import Card from './common/Card';
 import CardSection from './common/CardSection';
@@ -31,7 +32,8 @@ export default class RestaurantScreen extends Component {
           modalVisible: false,
           allvar: [],
           res_id: '',
-          logintype: ''
+          logintype: '',
+          showloading: true
       };
   }
 
@@ -43,10 +45,13 @@ export default class RestaurantScreen extends Component {
       if(snap1.val()){
         let data = snap1.val();
         if(data.usertype){
-        this.setState({logintype: data.usertype},()=>{console.log(this.state.logintype)});
+        this.setState({logintype: data.usertype},()=>{console.log(this.state.logintype);this.setState({showloading: false})});
          }
         }
       })
+    }
+    else {
+      this.setState({showloading: true})
     }
   });
 
@@ -74,11 +79,11 @@ export default class RestaurantScreen extends Component {
           }
     
       }
-      this.setState({allvar: dSSdata});
+      this.setState({allvar: dSSdata, showloading:false});
 
       }else {
         console.log('not found');
-        this.setState({notFound: true});
+        this.setState({notFound: true, showloading:false});
       }
     }
 
@@ -110,7 +115,7 @@ export default class RestaurantScreen extends Component {
               }
         
           }
-          this.setState({allvar: dSSdata});
+          this.setState({allvar: dSSdata, showloading:false});
   
           })
         }
@@ -137,7 +142,7 @@ export default class RestaurantScreen extends Component {
   onStarRatingPress(rating) {
     firebase.database().ref("rastaurants/" + this.state.res_id + "/ratings/" + (firebase.auth().currentUser.uid) ).set({rate: rating});
     this.setState({
-      starCount: rating,
+      starCount: 0,
       modalVisible: false
     });
   }
@@ -162,132 +167,23 @@ export default class RestaurantScreen extends Component {
     console.log('click end.....');
   }
 
-
-
-  checkdata(){
-  console.log("hello "); 
-    console.log(this.props.mapdata);
-    if(this.props.mapdata){
-      this.props.mapdata.map((restaurants, key)=>{
-
-        return(
-          <View>
-          <Card key={key}>
-            <CardSection>
-              <TouchableWithoutFeedback onPress={()=>{this.goFoodmenu(restaurants,key)}}>
-                <Image
-                    style={styles.IconStyle}
-                    resizeMode='stretch'
-                    source={{uri: restaurants.logo}}
-                />
-              </TouchableWithoutFeedback>
-              <View style={{ marginTop: 10, marginLeft: 10, }}>
-                <TouchableWithoutFeedback onPress={()=>{this.goFoodmenu(restaurants,key)}}>
-                  <View style={{ width: width-150  }}>
-                    <Text style={{ color: '#005696', marginRight: 12 }}>{restaurants.restaurants_name}</Text>
-                  </View>
-                </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback onPress={()=>{this.goFoodmenu(restaurants,key)}}>
-                  <View style={{ width: width-150  }}>
-                    <Text style={{ color: '#012f51', marginTop: 12 }}>{restaurants.positions}</Text>
-                  </View>
-                  </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback onPress={()=>{this.goFoodmenu(restaurants,key)}}>
-                  <View>  
-                    <Text style={{ color: '#b1b1b1', marginTop: 12 }}>Stall No: {restaurants.stall_no}</Text>
-                  </View>
-                </TouchableWithoutFeedback>
-  
-                {
-                    (this.state.logintype == "staff") ?
-                
-                <View style={{ flexDirection: 'row' }}>
-  
-                  <StarRating
-                    disabled={true}
-                    maxStars={5}
-                    rating={restaurants.user_rating}
-                    selectedStar={
-                      () => {this.openModal(key)}
-                    }
-                    fullStarColor = {'#ddc600'}
-                    starSize= {18}
-                    starStyle= {{ marginTop: 16, margin: 2 }}
-                    emptyStarColor= '#ddc600'
-                  />
-                    
-                  <Icon
-                    name='md-chatbubbles'
-                    type='ionicon'
-                    color='#005696'
-                    size= {28}
-                    containerStyle = {{marginLeft: 35, marginTop: 8}}
-                    onPress={() => Actions.feedback({data: restaurants, id: key, Ttype: 'res'})} 
-                  />
-                  <Icon
-                    name='md-share'
-                    type='ionicon'
-                    color='#005696'
-                    size= {28}
-                    containerStyle = {{marginLeft: 17, marginTop: 8}}
-                    onPress={() => this.shareIt(restaurants,key)} 
-                  />
-                </View>
-                :
-                <View style={{ flexDirection: 'row' }}>
-  
-                <StarRating
-                  disabled={false}
-                  maxStars={5}
-                  rating={restaurants.user_rating}
-                  selectedStar={
-                    () => {this.openModal(key)}
-                  }
-                  fullStarColor = {'#ddc600'}
-                  starSize= {18}
-                  starStyle= {{ marginTop: 16, margin: 2 }}
-                  emptyStarColor= '#ddc600'
-                />
-                  
-                <Icon
-                  name='md-chatbubbles'
-                  type='ionicon'
-                  color='#005696'
-                  size= {28}
-                  containerStyle = {{marginLeft: 35, marginTop: 8}}
-                  onPress={() => Actions.comment({data: restaurants, id: key, Ttype: 'res'})} 
-                />
-                <Icon
-                  name='md-share'
-                  type='ionicon'
-                  color='#005696'
-                  size= {28}
-                  containerStyle = {{marginLeft: 17, marginTop: 8}}
-                  onPress={() => this.shareIt(restaurants,key)} 
-                />
-              </View>    
-              }
-              </View>
-            </CardSection>
-          </Card>
-          </View>
-  
-                )
-
-
-      })
-      
-
-
-    }
-  }
   render() {
     console.log("hello "); 
     console.log(this.props.Ttype);
-
-    return (
+      return (
       <View>
         <CustomHeader Headershow={true} showFeedbackButton={false} headerName="Restaurant List" showSearchButton={true} showLogoutButton={true} showBackbutton= {false} onPressLogout={()=>{alert("Logout Clicked")}} onPressBack={()=>{alert("back icon Clicked")}}/>
+      {
+        this.state.showloading ?
+        (
+          <View style={{position:'absolute', alignSelf:'center',top:((height-100)/2)}}>
+          <View style={[styles.loadingcontainer, styles.loadinghorizontal]}>
+            <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+        </View>
+        )
+        :
+    (
       <ScrollView style={{width: width, height: height-135}}>
 
       {
@@ -553,8 +449,12 @@ export default class RestaurantScreen extends Component {
         </Modal>
 
       </ScrollView>
+    )
+      }
       </View>
     );
+
+
   }
 }
 
@@ -586,6 +486,15 @@ const styles = StyleSheet.create({
     width: '75%',
     borderRadius: 5,
     height: 120
+  },
+  loadingcontainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  loadinghorizontal: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10
   },
 });
 

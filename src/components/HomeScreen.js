@@ -6,7 +6,8 @@ import {
   Image,
   Dimensions,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import * as firebase from 'firebase';
@@ -28,6 +29,7 @@ export default class HomeScreen extends Component {
         logintype: '',
         isVisible: false,
         buttonRect: {},
+        showloading: false
      }
  }
 
@@ -58,8 +60,6 @@ export default class HomeScreen extends Component {
    // Actions.restaurant();
 
 
-   
-
    let ref = firebase.database().ref('rastaurants');
    ref.on('value',(snap)=>{
      if(snap.val()){
@@ -84,7 +84,7 @@ export default class HomeScreen extends Component {
            }
      
        }
-
+       this.setState({showloading: false});
        Actions.restaurant({mapdata: dSSdata});
 
      }
@@ -111,6 +111,15 @@ export default class HomeScreen extends Component {
     Actions.feedback({Ttype: 'genfeed'});
  }
 render() {
+    if(this.state.showloading) {
+        return (
+            <View style={[styles.loadingcontainer, styles.loadinghorizontal]}>
+                <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+        )
+    }
+    else {
+
   return (
     <View>
         {
@@ -129,7 +138,7 @@ render() {
             source={require('../assets/images/homeBanner.jpg')}
         />
         <ScrollView style={{height:(height-320), width: width, top: 20}}>
-            <TouchableOpacity onPress={this.openAbout}>
+            <TouchableOpacity onPress={()=>{this.openAbout()}}>
                 <View style={styles.ListStyle}>
                     <Image
                     style={styles.IconStyle}
@@ -138,7 +147,7 @@ render() {
                     <Text style={styles.textStyle}>About Ahare Bangla</Text> 
                 </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={this.openMap}>
+            <TouchableOpacity onPress={()=>{this.openMap()}}>
                 <View style={styles.ListStyle}>
                     <Image
                     style={styles.IconStyle}
@@ -147,7 +156,7 @@ render() {
                     <Text style={styles.textStyle}>Map</Text> 
                 </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={this.openRestaurant}>
+            <TouchableOpacity onPress={()=>{this.setState({showloading: true},()=>{this.openRestaurant()});this.render()}}>
                 <View style={styles.ListStyle}>
                     <Image
                     style={styles.IconStyle}
@@ -156,7 +165,7 @@ render() {
                     <Text style={styles.textStyle}>Restaurant</Text> 
                 </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={this.openSearch}>
+            <TouchableOpacity onPress={()=>{this.openSearch()}}>
                 <View style={styles.ListStyle}>
                     <Image
                     style={styles.IconStyle}
@@ -165,7 +174,7 @@ render() {
                     <Text style={styles.textStyle}>Search</Text> 
                 </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={this.openNews}>
+            <TouchableOpacity onPress={()=>{this.openNews()}}>
                 <View style={styles.ListStyle}>
                     <Image
                     style={styles.IconStyle}
@@ -174,7 +183,7 @@ render() {
                     <Text style={styles.textStyle}>News</Text> 
                 </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={this.openParking}>
+            <TouchableOpacity onPress={()=>{this.openParking()}}>
                     <View style={styles.ListStyle}>
                         <Image
                         style={styles.IconStyle}
@@ -183,7 +192,7 @@ render() {
                         <Text style={styles.textStyle}>Parking</Text> 
                     </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={this.openSchedule}>
+            <TouchableOpacity onPress={()=>{this.openSchedule()}}>
                 <View style={styles.ListStyle}>
                     <Image
                     style={styles.IconStyle}
@@ -196,6 +205,7 @@ render() {
     </View>
     </View>
   );
+}
 }
 }
 
@@ -223,5 +233,16 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#005696", 
     fontWeight: 'bold'
-  }
+  },
+  loadingcontainer: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'transparent'
+  },
+  loadinghorizontal: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10,
+    backgroundColor: 'transparent'
+  },
 });

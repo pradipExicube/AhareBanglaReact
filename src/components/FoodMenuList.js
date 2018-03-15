@@ -47,11 +47,9 @@ componentWillMount() {
 
 
     var ref = firebase.database().ref('rastaurants/' + this.props.res_id + "/category/" + this.props.cat_id + "/subcategory/" + this.props.id + "/menu" );
-    
-    alldata=[];
-
+   
     ref.on("value",(snapshot)=>{
-        
+        alldata=[];
         let menu=snapshot.val();
         for(let i=0;i<menu.length;i++){
           if(menu[i].ratings){
@@ -70,7 +68,10 @@ componentWillMount() {
         }
 
       }
-      this.setState({foodData: alldata});
+      this.setState({foodData: []},()=>{
+        this.setState({foodData: alldata});
+      });
+
     });
 }
 openModal(key) {
@@ -88,7 +89,7 @@ onStarRatingPress(rating) {
     .set({rate: rating});
     
     this.setState({
-      starCount: rating,
+      starCount: 0,
       modalVisible: false
     });
 }

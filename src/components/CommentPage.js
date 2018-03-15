@@ -7,10 +7,12 @@ import {
   Image,
   ScrollView,
   TextInput,
+  TouchableOpacity
 } from 'react-native';
 import * as firebase from 'firebase';
 import CustomHeader from './common/CustomHeader';
 import { Button } from 'react-native-elements';
+import { Actions } from 'react-native-router-flux';
 
 var {width,height} = Dimensions.get('window');
 
@@ -22,7 +24,8 @@ export default class CommentPage extends Component {
             comments: [],
             user_id: '',
             fullname: '',
-            c_image: ''
+            c_image: '',
+            showloading: false,
         };
         console.log(this.props.id);
     }
@@ -104,14 +107,19 @@ export default class CommentPage extends Component {
     }
 
     sendMessage() {
+        
         if(this.props.Ttype == "res") {
           firebase.database().ref("rastaurants/" + this.props.id + "/comments/").push({messege:this.state.newComment,name:this.state.fullname,image:this.state.c_image,user_id:(firebase.auth().currentUser.uid)});
-          this.setState({newComment: ""});
+          this.setState({newComment: "", showloading: false});
         }
         else{
+
             console.log('props end............')
-            firebase.database().ref('rastaurants/' + this.props.res_id + "/category/" + this.props.cat_id + "/subcategory/" + this.props.subcat_id + "/menu/" + this.props.foodlistid + "/comments/").push({messege:this.state.newComment,name:this.state.fullname,image:this.state.c_image,user_id:(firebase.auth().currentUser.uid)});
-            this.setState({newComment: ""});
+            firebase.database().ref('rastaurants/' + this.props.res_id + "/category/" + this.props.cat_id + "/subcategory/" + this.props.subcat_id + "/menu/" + this.props.foodlistid + "/comments/").push({messege:this.state.newComment,name:this.state.fullname,image:this.state.c_image,user_id:(firebase.auth().currentUser.uid)})
+            .then((value)=>{
+                this.setState({newComment: "", showloading: false});
+            })
+            
         }
         // this.setState({comments: [], newComment: ''});
         // Actions.refresh();
@@ -171,7 +179,23 @@ export default class CommentPage extends Component {
                             onChangeText={(text) => this.setState({newComment: text})}
                         />
                     </View>
-                    
+                    {
+                    //     this.state.showloading ?
+                    //     <Button
+                    //     small
+                    //     containerViewStyle={{marginLeft: 0,marginRight:0,width: '25%', }}
+                    //     buttonStyle={{height: 50,}}
+                    //     raised
+                    //     backgroundColor='#012f51'
+                    //     color="#fff"
+                    //     fontSize={15}
+                    //     textStyle={{fontWeight: 'bold'}}
+                    //     // onPress={()=>{this.sendMessage();}}
+                    //     title="" 
+                    //     loading={this.state.showloading}
+                    // />
+                        
+                    // :
                     <Button
                         small
                         containerViewStyle={{marginLeft: 0,marginRight:0,width: '25%', }}
@@ -181,9 +205,15 @@ export default class CommentPage extends Component {
                         color="#fff"
                         fontSize={15}
                         textStyle={{fontWeight: 'bold'}}
-                        onPress={()=>{this.sendMessage();}}
+                        onPress={()=>{ this.setState({showloading: true},()=>{Actions.refresh(); this.sendMessage();});}}
                         title="Submit" 
+                        // Component={TouchableOpacity}
+                        loading={this.state.showloading}
                     />
+
+                    }
+                    
+                    
                     
                 </View>
             </View>
