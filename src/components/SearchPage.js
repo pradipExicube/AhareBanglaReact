@@ -8,7 +8,9 @@ import {
   ScrollView,
   Picker,
   TextInput,
-  Button   
+  Button,
+  ActivityIndicator,
+  Alert   
 } from 'react-native';
 import * as firebase from 'firebase';
 import { Actions } from 'react-native-router-flux';
@@ -26,7 +28,8 @@ export default class SearchPage extends Component {
         menufound: false,
         newArr: [],
         restaurantName: '---Select---',
-        restaurantIndex: null
+        restaurantIndex: null,
+        showloading: true,
     };
 }
 
@@ -34,7 +37,7 @@ componentWillMount() {
     let ref = firebase.database().ref('rastaurants');
     ref.on('value',(snap)=>{
       if(snap.val()){
-        this.setState({restaurantDetails: snap.val()});
+        this.setState({restaurantDetails: snap.val(), showloading: false});
       }
     })
   }
@@ -44,7 +47,17 @@ foodSearch(reskey) {
         console.log(this.state.seachtype);
         console.log(this.state.restaurantName);
         console.log(this.state.restaurantIndex);
-        Actions.popAndPush('foodmenu',({id: reskey, resName: this.state.restaurantName}));
+        if(this.state.restaurantName=='---Select---') {
+            Alert.alert(
+                'Error',
+                'Please Select A Restaurant',
+                [
+                  {text: 'OK', onPress: () => console.log('OK Pressed')},
+                ],
+              )
+        }else{
+            Actions.popAndPush('foodmenu',({id: reskey, resName: this.state.restaurantName}));
+        }
     }
     else{
         console.log(this.state.seachtype);
@@ -85,9 +98,9 @@ foodSearch(reskey) {
         }
     }
 
-        console.log("menu found......!!");
-        console.log(newArr);
-        console.log("end..!!"); 
+        // console.log("menu found......!!");
+        // console.log(newArr);
+        // console.log("end..!!"); 
         let searchtype=this.state.seachtype; 
 
         this.goRestaurant(searchtype,newArr)
@@ -99,6 +112,9 @@ foodSearch(reskey) {
 
 goRestaurant(restype,resdata) {
     Actions.restaurant({restaurantType: restype, data: resdata}) 
+    // Actions.refresh("restaurant",{ mapdata: resdata});
+    // Actions.restaurant({ mapdata: resdata}) 
+    
 }
 
 setData(value){
@@ -106,22 +122,18 @@ setData(value){
 }
 reloadData(){
     if(this.state.seachtype == 'restaurant'){
+        if(this.state.showloading){
+            return (
+                <View>
+                    <ActivityIndicator size="large" color="#0000ff" />
+                </View>
+            )
+          }else{
         
         return (       
         <View>
-            <Text style={{
-                        color: 'rgba(0, 86, 150, 0.9)',
-                        fontWeight: 'normal',
-                        fontSize: 18,
-                        marginTop: 20,
-                        marginLeft: 20
-                    }}>Search Restaurant</Text>   
-            <View style={{
-                borderBottomWidth: 1,
-                borderBottomColor: 'rgba(0, 86, 150, 0.3)',           
-                backgroundColor: 'rgba(0, 86, 150, 0.2)', 
-                marginTop: 10,
-                margin: 20
+            <Text style={{color: 'rgba(0, 86, 150, 0.9)',fontWeight: 'normal',fontSize: 18,marginTop: 20,marginLeft: 20}}>Search Restaurant</Text>   
+            <View style={{borderBottomWidth: 1,borderBottomColor: 'rgba(0, 86, 150, 0.3)',backgroundColor: 'rgba(0, 86, 150, 0.2)',marginTop: 10,margin: 20
             }}>
             
                 <Picker
@@ -154,24 +166,13 @@ reloadData(){
             </View> 
         </View>
         )
+    }
        
     }else{
         return (
         <View>
-            <Text style={{
-                        color: 'rgba(0, 86, 150, 0.9)',
-                        fontWeight: 'normal',
-                        fontSize: 18,
-                        marginTop: 20,
-                        marginLeft: 20
-                    }}>Search Food Menu</Text>
-            <View style={{
-                borderBottomWidth: 1,
-                borderBottomColor: 'rgba(0, 86, 150, 0.3)',           
-                backgroundColor: 'rgba(0, 86, 150, 0.2)', 
-                marginTop: 10,
-                margin: 20
-            }}>
+            <Text style={{color: 'rgba(0, 86, 150, 0.9)',fontWeight: 'normal',fontSize: 18,marginTop: 20,marginLeft: 20}}>Search Food Menu</Text>
+            <View style={{borderBottomWidth: 1,borderBottomColor: 'rgba(0, 86, 150, 0.3)',backgroundColor: 'rgba(0, 86, 150, 0.2)',marginTop: 10,margin: 20}}>
                 <TextInput
                     style={{height: 50, padding: 10, fontSize: 15}}
                     placeholder="Please Enter Food Name"
@@ -189,20 +190,8 @@ reloadData(){
  render() {
         return (
             <View>
-                <Text style={{
-                        color: 'rgba(0, 86, 150, 0.9)',
-                        fontWeight: 'normal',
-                        fontSize: 18,
-                        marginTop: 20,
-                        marginLeft: 20
-                    }}>Search Type</Text>
-                <View style={{
-                    borderBottomWidth: 1,
-                    borderBottomColor: 'rgba(0, 86, 150, 0.3)',           
-                    backgroundColor: 'rgba(0, 86, 150, 0.2)', 
-                    marginTop: 10,
-                    margin: 20
-                }}>
+                <Text style={{color: 'rgba(0, 86, 150, 0.9)',fontWeight: 'normal',fontSize: 18,marginTop: 20,marginLeft: 20}}>Search Type</Text>
+                <View style={{borderBottomWidth: 1,borderBottomColor: 'rgba(0, 86, 150, 0.3)',backgroundColor: 'rgba(0, 86, 150, 0.2)',marginTop: 10,margin: 20}}>
                     <Picker
                         selectedValue={this.state.seachtype}
                         onValueChange={(itemValue, itemIndex) => this.setData(itemValue)}
@@ -242,5 +231,5 @@ const styles = StyleSheet.create({
         height: 220, 
         top: 30, 
         alignSelf: 'center'
-    },  
+    }, 
 });

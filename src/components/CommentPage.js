@@ -26,8 +26,7 @@ export default class CommentPage extends Component {
         };
         console.log(this.props.id);
     }
-    componentWillMount(){
-        this.setState({comments: [], newComment: ''});
+    componentDidMount(){
         this.setState({user_id : firebase.auth().currentUser.uid});
         var ref = firebase.database().ref('/users/' + (firebase.auth().currentUser.uid) + '/');
         ref.once('value', (_snapshot) => {
@@ -50,11 +49,13 @@ export default class CommentPage extends Component {
 
 
         if(this.props.Ttype == "res") {
-        var allDataa=[];
+        
         var reff = firebase.database().ref('rastaurants/' + this.props.id +'/comments/' );  
         reff.on('value',(snapshot)=>{
+            var allDataa=[];
             console.log('snapshot');
             console.log(snapshot.val());
+            this.setState({comments: []})
             var cData = snapshot.val();
 
            try {
@@ -77,9 +78,11 @@ export default class CommentPage extends Component {
         else{
             console.log('foodlist..............')
             let itemRef = firebase.database().ref('rastaurants/' + this.props.res_id + "/category/" + this.props.cat_id + "/subcategory/" + this.props.subcat_id + "/menu/" + this.props.foodlistid + "/comments/");
-                var foodcomment = [];
+                
                 itemRef.on("value",(snapshot)=>{
-                    console.log(snapshot.val())
+                    var foodcomment = [];
+                    this.setState({comments: []});
+                    console.log(snapshot.val());
                 var fcData = snapshot.val();
                 try {
                     for(let key in fcData){
@@ -106,10 +109,6 @@ export default class CommentPage extends Component {
           this.setState({newComment: ""});
         }
         else{
-            console.log(this.props.res_id);
-            console.log(this.props.cat_id);
-            console.log(this.props.subcat_id);
-            console.log(this.props.foodlistid);
             console.log('props end............')
             firebase.database().ref('rastaurants/' + this.props.res_id + "/category/" + this.props.cat_id + "/subcategory/" + this.props.subcat_id + "/menu/" + this.props.foodlistid + "/comments/").push({messege:this.state.newComment,name:this.state.fullname,image:this.state.c_image,user_id:(firebase.auth().currentUser.uid)});
             this.setState({newComment: ""});

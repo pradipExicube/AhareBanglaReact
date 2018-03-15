@@ -6,7 +6,8 @@ import {
   Dimensions,
   Image,
   ScrollView,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  ActivityIndicator
 } from 'react-native';
 import Card from './common/Card';
 import { Icon } from 'react-native-elements';
@@ -26,7 +27,8 @@ export default class FoodMenu extends Component {
             notfoundimage: "https://firebasestorage.googleapis.com/v0/b/aharebangla-6f646.appspot.com/o/nanMenu.png?alt=media&token=764f9fe8-b2f8-4c82-858e-6e01cab1e8c3",
             notFound: false,
             restaurantName: '',
-            cat: []
+            cat: [],
+            showloading: true,
             }
         }
         componentWillMount() {
@@ -38,7 +40,7 @@ export default class FoodMenu extends Component {
             let reff = firebase.database().ref('/rastaurants/'+ this.props.id );
             reff.once('value', (snap1)=>{
               if(snap1.val()){
-                this.setState({restaurantName: snap1.val().restaurants_name});
+                this.setState({restaurantName: snap1.val().restaurants_name, showloading: false,});
               }
             })
         }   
@@ -47,7 +49,7 @@ export default class FoodMenu extends Component {
         
         ref.once("value",(snapshot)=>{
           if(snapshot.val()){
-            this.setState({cat: snapshot.val()});
+            this.setState({cat: snapshot.val(), showloading: false});
             console.log(this.state.cat.length);
             // if(this.state.cat.length == 0){
                 this.setState({notFound: false})
@@ -67,7 +69,8 @@ export default class FoodMenu extends Component {
         Actions.subcategory({data: data, id: key,res_id: res_id});
     }
     render() {
-  return (
+  
+    return (
 
         
     <View style={styles.containerStyle}>
@@ -80,8 +83,20 @@ export default class FoodMenu extends Component {
         
 
     {
+
+        this.state.showloading ? 
+            (
+            <View style={{position:'absolute', alignSelf:'center',top:((height-100)/2)}}>
+                <View style={[styles.loadingcontainer, styles.loadinghorizontal]}>
+                    <ActivityIndicator size="large" color="#0000ff" />
+                </View>  
+            </View>
+            )
+            : 
+
+        (
         (this.state.notFound==true) ?
-    (
+        (
         <Image
             style={{
                 position: 'absolute',
@@ -97,7 +112,6 @@ export default class FoodMenu extends Component {
     )
     :
     (
-
         
             this.state.cat ? 
             this.state.cat.map((category,key)=>{
@@ -130,7 +144,9 @@ export default class FoodMenu extends Component {
         )
         })
           : null
-    )
+            )
+        )
+
         }
     
 
@@ -177,5 +193,14 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between', 
         backgroundColor: 'rgba(0, 0, 0, 0.4)', 
         top: 80 
-    }
+    },
+    loadingcontainer: {
+        flex: 1,
+        justifyContent: 'center'
+      },
+      loadinghorizontal: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        padding: 10
+      },
 });
