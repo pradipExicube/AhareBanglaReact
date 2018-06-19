@@ -71,7 +71,6 @@ export default class MapScreen extends Component {
       // Actions.restaurant({resPos: 'Exhibi Hanger', Ttype: 'map'});
       this.calculateData('Exhibi Hanger')
     }
-    
   }
 
   //calculate data
@@ -80,9 +79,8 @@ export default class MapScreen extends Component {
     var newArr = [];
     var resArray = [];
 
-    // let resname = this.props.resPos;
     let reff = firebase.database().ref('rastaurants');
-    reff.once('value',(snapshot)=>{
+    reff.on('value',(snapshot)=>{
         if(snapshot.val()) {
               mapdata = snapshot.val();
               for(let i=0;i<mapdata.length;i++){

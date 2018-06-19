@@ -7,7 +7,8 @@ import {
   Image,
   ScrollView,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  TouchableHighlight
 } from 'react-native';
 import * as firebase from 'firebase';
 import CustomHeader from './common/CustomHeader';
@@ -207,7 +208,7 @@ export default class CommentPage extends Component {
                         textStyle={{fontWeight: 'bold'}}
                         onPress={()=>{ this.setState({showloading: true},()=>{Actions.refresh(); this.sendMessage();});}}
                         title="Submit" 
-                        // Component={TouchableOpacity}
+                        Component={TouchableHighlight}
                         loading={this.state.showloading}
                     />
 

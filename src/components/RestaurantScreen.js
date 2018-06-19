@@ -27,7 +27,6 @@ export default class RestaurantScreen extends Component {
     console.log('restaurent_start');
       this.state = {
           starCount: 0,
-          restaurantData: [],
           notFound: false,
           modalVisible: false,
           allvar: [],
@@ -37,7 +36,7 @@ export default class RestaurantScreen extends Component {
       };
   }
 
-  componentWillMount() {
+  async componentWillMount() {
     firebase.auth().onAuthStateChanged((user)=>{
       if(user){
       let checkref = firebase.database().ref('users/' + (firebase.auth().currentUser.uid));
@@ -79,11 +78,11 @@ export default class RestaurantScreen extends Component {
           }
     
       }
-      this.setState({allvar: dSSdata, showloading:false});
+      this.setState({allvar: dSSdata, showloading: false});
 
       }else {
         console.log('not found');
-        this.setState({notFound: true, showloading:false});
+        this.setState({notFound: true, showloading: false});
       }
     }
 
@@ -93,31 +92,31 @@ export default class RestaurantScreen extends Component {
     else {
       console.log('firebase');
       let ref = firebase.database().ref('rastaurants');
-      ref.on('value',(snap)=>{
+      await ref.on('value',(snap)=>{
+        let restaurantData = []
         if(snap.val()){
-          this.setState({restaurantData: snap.val()},()=>{
+          restaurantData = snap.val();
             var dSSdata=[];
 
-            for(let i=0;i<this.state.restaurantData.length;i++) {
-              if(this.state.restaurantData[i].ratings){
-                  let obj = this.state.restaurantData[i].ratings;
+            for(let i=0;i<restaurantData.length;i++) {
+              if(restaurantData[i].ratings){
+                  let obj = restaurantData[i].ratings;
                   let rating = 0;
                   let count = 0;
                   for(let key in obj){
                       rating = rating + parseInt(obj[key].rate);
                       count++;
                   }
-                  this.state.restaurantData[i].user_rating = rating/count;
-                  dSSdata.push(this.state.restaurantData[i]);
-              }else{
-                this.state.restaurantData[i].user_rating = 0;
-                dSSdata.push(this.state.restaurantData[i])
+                  restaurantData[i].user_rating = rating/count;
+                  dSSdata.push(restaurantData[i]);
+              }
+              else{
+                restaurantData[i].user_rating = 0;
+                dSSdata.push(restaurantData[i])
               }
         
           }
-          this.setState({allvar: dSSdata, showloading:false});
-  
-          })
+         this.setState({allvar: dSSdata, showloading: false});
         }
       })
       
@@ -172,7 +171,7 @@ export default class RestaurantScreen extends Component {
     console.log(this.props.Ttype);
       return (
       <View>
-        <CustomHeader Headershow={true} showFeedbackButton={false} headerName="Restaurant List" showSearchButton={true} showLogoutButton={true} showBackbutton= {false} onPressLogout={()=>{alert("Logout Clicked")}} onPressBack={()=>{alert("back icon Clicked")}}/>
+        <CustomHeader Headershow={true} showFeedbackButton={false} headerName="Restaurant List" showSearchButton={true} showLogoutButton={true} showBackbutton= {true} onPressLogout={()=>{alert("Logout Clicked")}} onPressBack={()=>{alert("back icon Clicked")}}/>
       {
         this.state.showloading ?
         (
