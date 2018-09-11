@@ -9,7 +9,8 @@ import {
   Dimensions,
   Modal,
   Share,
-  ActivityIndicator
+  ActivityIndicator,
+  FlatList
 } from 'react-native';
 import Card from './common/Card';
 import CardSection from './common/CardSection';
@@ -44,7 +45,7 @@ export default class RestaurantScreen extends Component {
       if(snap1.val()){
         let data = snap1.val();
         if(data.usertype){
-        this.setState({logintype: data.usertype},()=>{console.log(this.state.logintype);this.setState({showloading: false})});
+        this.setState({logintype: data.usertype},()=>{console.log(this.state.logintype);/* this.setState({showloading: false}) */});
          }
         }
       })
@@ -78,7 +79,7 @@ export default class RestaurantScreen extends Component {
           }
     
       }
-      this.setState({allvar: dSSdata, showloading: false});
+      this.setState({allvar: dSSdata, showloading: false},()=>{this.state.allvar});
 
       }else {
         console.log('not found');
@@ -93,9 +94,13 @@ export default class RestaurantScreen extends Component {
       console.log('firebase');
       let ref = firebase.database().ref('rastaurants');
       await ref.on('value',(snap)=>{
+        // this.setState({showloading:true})
         let restaurantData = []
         if(snap.val()){
           restaurantData = snap.val();
+          // console.log('restaurantData start')
+          // console.log(restaurantData);
+          // console.log('restaurantData end')
             var dSSdata=[];
 
             for(let i=0;i<restaurantData.length;i++) {
@@ -125,7 +130,7 @@ export default class RestaurantScreen extends Component {
 
   }
 
-  componentWillUnmount() {
+  componentDidUpdate() {
     console.log('component will unmount .....')
   }
   
@@ -166,12 +171,234 @@ export default class RestaurantScreen extends Component {
     console.log('click end.....');
   }
 
+  mapRestaurants = ({item,index}) => {
+// console.log(restaurants)
+    return(
+          
+      <Card>
+        <CardSection>
+          <TouchableWithoutFeedback onPress={()=>{this.goFoodmenu(item,index)}}>
+            <Image
+                style={styles.IconStyle}
+                resizeMode='stretch'
+                source={{uri: item.logo}}
+            />
+          </TouchableWithoutFeedback>
+          <View style={{ marginTop: 10, marginLeft: 10, }}>
+            <TouchableWithoutFeedback onPress={()=>{this.goFoodmenu(item,index)}}>
+              <View style={{ width: width-150  }}>
+                <Text style={{ color: '#005696', marginRight: 12 }}>{item.restaurants_name}</Text>
+              </View>
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={()=>{this.goFoodmenu(item,index)}}>
+              <View style={{ width: width-150  }}>
+                <Text style={{ color: '#012f51', marginTop: 12 }}>{item.positions}</Text>
+              </View>
+              </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={()=>{this.goFoodmenu(item,index)}}>
+              <View>  
+                <Text style={{ color: '#b1b1b1', marginTop: 12 }}>Stall No: {item.stall_no}</Text>
+              </View>
+            </TouchableWithoutFeedback>
+
+            {
+                (this.state.logintype == "staff") ?
+            
+            <View style={{ flexDirection: 'row' }}>
+
+              <StarRating
+                disabled={true}
+                maxStars={5}
+                rating={item.user_rating}
+                selectedStar={
+                  () => {this.openModal(index)}
+                }
+                fullStarColor = {'#ddc600'}
+                starSize= {18}
+                starStyle= {{ marginTop: 16, margin: 2 }}
+                emptyStarColor= '#ddc600'
+              />
+                
+              <Icon
+                name='md-chatbubbles'
+                type='ionicon'
+                color='#005696'
+                size= {28}
+                containerStyle = {{marginLeft: 35, marginTop: 8}}
+                onPress={() => Actions.feedback({data: item, id: index, Ttype: 'res'})} 
+              />
+              <Icon
+                name='md-share'
+                type='ionicon'
+                color='#005696'
+                size= {28}
+                containerStyle = {{marginLeft: 17, marginTop: 8}}
+                onPress={() => this.shareIt(item,index)} 
+              />
+            </View>
+            :
+            <View style={{ flexDirection: 'row' }}>
+
+            <StarRating
+              disabled={false}
+              maxStars={5}
+              rating={item.user_rating}
+              selectedStar={
+                () => {this.openModal(index)}
+              }
+              fullStarColor = {'#ddc600'}
+              starSize= {18}
+              starStyle= {{ marginTop: 16, margin: 2 }}
+              emptyStarColor= '#ddc600'
+            />
+              
+            <Icon
+              name='md-chatbubbles'
+              type='ionicon'
+              color='#005696'
+              size= {28}
+              containerStyle = {{marginLeft: 35, marginTop: 8}}
+              onPress={() => Actions.comment({data: item, id: index, Ttype: 'res'})} 
+            />
+            <Icon
+              name='md-share'
+              type='ionicon'
+              color='#005696'
+              size= {28}
+              containerStyle = {{marginLeft: 17, marginTop: 8}}
+              onPress={() => this.shareIt(item,index)} 
+            />
+          </View>    
+          }
+          </View>
+        </CardSection>
+      </Card>
+      
+
+    )
+
+
+  }
+
+  restaurants = ({item,index}) => {
+    // console.log('item start')
+    // console.log(item)
+    // console.log('item end')
+
+    return(
+      
+      <Card>
+        <CardSection>
+          <TouchableWithoutFeedback onPress={()=>{this.goFoodmenu(item,index)}}>
+            <Image
+                style={styles.IconStyle}
+                resizeMode='stretch'
+                source={{uri: item.logo}}
+            />
+          </TouchableWithoutFeedback>
+          <View style={{ marginTop: 10, marginLeft: 10, }}>
+            <TouchableWithoutFeedback onPress={()=>{this.goFoodmenu(item,index)}}>
+              <View style={{ width: width-150  }}>
+                <Text style={{ color: '#005696', marginRight: 12 }}>{item.restaurants_name}</Text>
+              </View>
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={()=>{this.goFoodmenu(item,index)}}>
+              <View style={{ width: width-150  }}>
+                <Text style={{ color: '#012f51', marginTop: 12 }}>{item.positions}</Text>
+              </View>
+              </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={()=>{this.goFoodmenu(item,index)}}>
+              <View>  
+                <Text style={{ color: '#b1b1b1', marginTop: 12 }}>Stall No: {item.stall_no}</Text>
+              </View>
+            </TouchableWithoutFeedback>
+
+            {
+                (this.state.logintype == "staff") ?
+            
+            <View style={{ flexDirection: 'row' }}>
+
+              <StarRating
+                disabled={true}
+                maxStars={5}
+                rating={item.user_rating}
+                selectedStar={
+                  () => {this.openModal(index)}
+                }
+                fullStarColor = {'#ddc600'}
+                starSize= {18}
+                starStyle= {{ marginTop: 16, margin: 2 }}
+                emptyStarColor= '#ddc600'
+              />
+                
+              <Icon
+                name='md-chatbubbles'
+                type='ionicon'
+                color='#005696'
+                size= {28}
+                containerStyle = {{marginLeft: 35, marginTop: 8}}
+                onPress={() => Actions.feedback({data: item, id: index, Ttype: 'res'})} 
+              />
+              <Icon
+                name='md-share'
+                type='ionicon'
+                color='#005696'
+                size= {28}
+                containerStyle = {{marginLeft: 17, marginTop: 8}}
+                onPress={() => this.shareIt(item,index)} 
+              />
+            </View>
+            :
+            <View style={{ flexDirection: 'row' }}>
+
+            <StarRating
+              disabled={false}
+              maxStars={5}
+              rating={item.user_rating}
+              selectedStar={
+                () => {this.openModal(index)}
+              }
+              fullStarColor = {'#ddc600'}
+              starSize= {18}
+              starStyle= {{ marginTop: 16, margin: 2 }}
+              emptyStarColor= '#ddc600'
+            />
+              
+            <Icon
+              name='md-chatbubbles'
+              type='ionicon'
+              color='#005696'
+              size= {28}
+              containerStyle = {{marginLeft: 35, marginTop: 8}}
+              onPress={() => Actions.comment({data: item, id: index, Ttype: 'res'})} 
+            />
+            <Icon
+              name='md-share'
+              type='ionicon'
+              color='#005696'
+              size= {28}
+              containerStyle = {{marginLeft: 17, marginTop: 8}}
+              onPress={() => this.shareIt(item,index)} 
+            />
+          </View>    
+          }
+          </View>
+        </CardSection>
+      </Card>
+
+      )
+
+  }
+
   render() {
     console.log("hello "); 
-    console.log(this.props.Ttype);
+    // console.log(this.state.allvar);
+    console.log('mapdata start')
+    console.log(this.props.mapdata)
+    console.log('mapdata end')
       return (
       <View>
-        <CustomHeader Headershow={true} showFeedbackButton={false} headerName="Restaurant List" showSearchButton={true} showLogoutButton={true} showBackbutton= {true} onPressLogout={()=>{alert("Logout Clicked")}} onPressBack={()=>{alert("back icon Clicked")}}/>
+        <CustomHeader Headershow={true} showFeedbackButton={false} headerName="Restaurant List" showSearchButton={true} showLogoutButton={true} showBackbutton= {false} onPressLogout={()=>{alert("Logout Clicked")}} onPressBack={()=>{alert("back icon Clicked")}}/>
       {
         this.state.showloading ?
         (
@@ -183,11 +410,30 @@ export default class RestaurantScreen extends Component {
         )
         :
     (
-      <ScrollView style={{width: width, height: height-135}}>
+      <View style={{width: width, height: height-135}}>
+      {/* <FlatList
+        data={this.props.mapdata}
+        renderItem={this.mapRestaurants}
+      />
+
+
+      <FlatList
+        data={this.state.establishmenntPhotos.reverse()}
+        renderItem={this.establishmenntPhotos}
+        showsVerticalScrollIndicator={false}
+        extraData={this.state}
+        keyExtractor={(item, index) => index.toString()}
+      /> */}
 
       {
         this.props.mapdata ? 
-        this.props.mapdata.map((restaurants, key)=>{
+        <FlatList
+          data={this.props.mapdata}
+          extraData={this.state}
+          renderItem={this.mapRestaurants}
+          keyExtractor={(item, index) => index.toString()}
+        />
+       /*  this.props.mapdata.map((restaurants, key)=>{
 
         return(
           
@@ -292,10 +538,16 @@ export default class RestaurantScreen extends Component {
           
   
                 )
-      }) :
+      }) */ :
             (
                this.state.allvar ? 
-               this.state.allvar.map((restaurants,key)=>{
+              <FlatList
+                data={this.state.allvar}
+                renderItem={this.restaurants}
+                extraData={this.state}
+                keyExtractor={(item, index) => index.toString()}
+              />
+              /*  this.state.allvar.map((restaurants,key)=>{
            
             return(
       
@@ -399,7 +651,7 @@ export default class RestaurantScreen extends Component {
         </Card>
 
               )
-            })
+            }) */
               : null)
             }
 
@@ -447,7 +699,7 @@ export default class RestaurantScreen extends Component {
           </View>
         </Modal>
 
-      </ScrollView>
+      </View>
     )
       }
       </View>

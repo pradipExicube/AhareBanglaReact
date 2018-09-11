@@ -56,7 +56,7 @@ export default class App extends Component {
         <Router>
           <Scene key='root'>
           <Scene key="Login" title="Login Page" hideNavBar={true}  component={LoginPage} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
-            <Tabs key="tabs" lazy={true} tabs={true} animationEnabled={false} tabStyle={{borderWidth: 1, borderColor: 'rgba(0, 86, 150, 0.3)'}} activeBackgroundColor={'#005696'} labelStyle={{color: '#fff', paddingBottom: 12, fontSize: 15}} tabBarPosition="bottom" tabBarStyle={styles.tabBar}>
+            <Tabs hideNavBar={true} key="tabs" lazy={true} tabs={true} animationEnabled={false} tabStyle={{borderWidth: 1, borderColor: 'rgba(0, 86, 150, 0.3)'}} activeBackgroundColor={'#005696'} labelStyle={{color: '#fff', paddingBottom: 12, fontSize: 15}} tabBarPosition="bottom" tabBarStyle={styles.tabBar}>
 
                 <Scene key="home" initial={true}  hideNavBar={true} title="Home" component={HomeScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} style={{color:'red'}} headerTintColor='#fff'/>
 
@@ -67,7 +67,20 @@ export default class App extends Component {
                 <Scene key="news"  hideNavBar={true} title="News" component={NewsScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
 
             </Tabs>
-            
+
+            <Tabs hideNavBar={true} key="maptabs" lazy={true} tabs={true} animationEnabled={false} tabStyle={{borderWidth: 1, borderColor: 'rgba(0, 86, 150, 0.3)'}} activeBackgroundColor={'#005696'} labelStyle={{color: '#fff', paddingBottom: 12, fontSize: 15}} tabBarPosition="bottom" tabBarStyle={styles.tabBar}>
+
+              <Scene key="home"  hideNavBar={true} title="Home" component={HomeScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} style={{color:'red'}} headerTintColor='#fff'/>
+
+              <Scene key="map" hideNavBar={true} title="Map" component={MapScreen} navigationBarStyle={{backgroundColor:'#005696',}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
+
+              <Scene key="restaurant" initial={true}  hideNavBar={true} title="Restaurant" component={RestaurantScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
+
+              <Scene key="news"  hideNavBar={true} title="News" component={NewsScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
+
+            </Tabs>
+            {/* <Scene key="restaurant" tabs={true} hideNavBar={true} title="Restaurant" component={RestaurantScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/> */}
+
             <Scene key="programmeSchedule" title="Programme Schedule"  component={ProgrammeSchedule} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
 
             <Scene key="parking" title="Parking"  component={Parking} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
@@ -133,6 +146,7 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     backgroundColor: '#008bf2',
-    marginBottom: 23
+    marginBottom: 23,
+    marginTop:0
   },
 });
