@@ -111,11 +111,10 @@ export default class MapScreen extends Component {
                 }
             }
             console.log("map page type : " + resname);
-            // Actions.restaurant({mapdata: newArr, Ttype: 'map',resname:resname});
-           Actions.restaurant({mapdata: newArr});
-            // Actions.replace("restaurant",{ mapdata: newArr});
-            // Actions.restaurant({ mapdata: newArr}) 
-
+              Actions.restaurant({mapdata: newArr});
+            // Actions.replace('restaurant',{ mapdata: newArr});
+            // Actions.replace('restaurant',{ mapdata: newArr});
+            // Actions.replace('restaurant',{ mapdata: newArr}, 'tabs');
             // console.log("position checking..!!");
             // console.log(newArr);
             // console.log("checking end..!!")

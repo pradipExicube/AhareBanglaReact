@@ -7,6 +7,7 @@ import {
   Image,
   ScrollView, 
   Modal,
+  FlatList
 } from 'react-native';
 import { Icon, Button } from 'react-native-elements';
 import StarRating from 'react-native-star-rating';
@@ -94,6 +95,90 @@ onStarRatingPress(rating) {
     });
 }
 
+foodMenuList = ({item, index}) => {
+    return(
+
+        <View style={styles.ListStyle}>
+            <View style={{flexDirection:'column', width: width}}>
+                <Text style={styles.foodMenuHeader}>{item.name}</Text>
+                <View style={{width: width, flexDirection: 'row',justifyContent:'space-between'}}> 
+                    <View style={{width: 230}}>
+                        <Text style={styles.foodMenuQuantity}>{item.description}</Text>
+                    </View>
+                <View style={{marginRight: 10}}>
+                    <Text style={styles.foodMenuRate}>₹{item.rate}</Text>
+                </View>
+                </View>
+
+        {
+            (this.state.logintype == "staff") ?
+
+                <View style={{flexDirection: 'row'}}>
+                    <View style={{
+                        marginTop: 10, 
+                        marginLeft: 20, 
+                        marginBottom: 10}}>
+                        <StarRating
+                            disabled={true}
+                            maxStars={5}
+                            rating={item.user_rating}
+                            selectedStar={
+                                () => this.openModal(index)
+                                // (rating) => this.onStarRatingPress(rating)
+                            }
+                            fullStarColor = {'#ffb400'}
+                            starSize= {26}
+                            starStyle= {{ margin: 4 }}
+                            emptyStarColor= '#ffb400'
+                        />
+                    </View>
+                </View>
+                :
+                <View style={{flexDirection: 'row'}}>
+                <Icon
+                    name='md-chatbubbles'
+                    type='ionicon'
+                    color='#005696'
+                    size= {28}
+                    containerStyle = {{
+                        marginTop: 10,
+                        marginLeft: 20, 
+                        marginBottom: 5}}
+                    onPress={() => {Actions.comment({
+                        foodlistdata: item.comments,
+                        foodlistid: index, 
+                        Ttype: 'foodlist', 
+                        cat_id: this.props.cat_id, 
+                        subcat_id: this.props.id,
+                        res_id: this.props.res_id
+                        })}} 
+                />
+                    <View style={{
+                        marginTop: 10, 
+                        marginLeft: 20, 
+                        marginBottom: 10}}>
+                        <StarRating
+                            disabled={false}
+                            maxStars={5}
+                            rating={item.user_rating}
+                            selectedStar={
+                                () => this.openModal(index)
+                                // (rating) => this.onStarRatingPress(rating)
+                            }
+                            fullStarColor = {'#ffb400'}
+                            starSize= {26}
+                            starStyle= {{ margin: 4 }}
+                            emptyStarColor= '#ffb400'
+                        />
+                    </View>
+                </View>
+        }
+            </View>
+
+        </View>
+    )
+}
+
  render() {
     return (
         <View>
@@ -103,91 +188,12 @@ onStarRatingPress(rating) {
         {
          
         this.state.foodData ? 
-        this.state.foodData.map((foodlist,key)=>{
-          // console.log('newsData');
-          // console.log(news.desc);             
-      return(
-
-            <View key={key} style={styles.ListStyle}>
-                <View style={{flexDirection:'column', width: width}}>
-                    <Text style={styles.foodMenuHeader}>{foodlist.name}</Text>
-                    <View style={{width: width, flexDirection: 'row',justifyContent:'space-between'}}> 
-                        <View style={{width: 230}}>
-                            <Text style={styles.foodMenuQuantity}>{foodlist.description}</Text>
-                        </View>
-                    <View style={{marginRight: 10}}>
-                        <Text style={styles.foodMenuRate}>₹{foodlist.rate}</Text>
-                    </View>
-                    </View>
-
-            {
-                (this.state.logintype == "staff") ?
-
-                    <View style={{flexDirection: 'row'}}>
-                        <View style={{
-                            marginTop: 10, 
-                            marginLeft: 20, 
-                            marginBottom: 10}}>
-                            <StarRating
-                                disabled={true}
-                                maxStars={5}
-                                rating={foodlist.user_rating}
-                                selectedStar={
-                                    () => this.openModal(key)
-                                    // (rating) => this.onStarRatingPress(rating)
-                                }
-                                fullStarColor = {'#ffb400'}
-                                starSize= {26}
-                                starStyle= {{ margin: 4 }}
-                                emptyStarColor= '#ffb400'
-                            />
-                        </View>
-                    </View>
-                    :
-                    <View style={{flexDirection: 'row'}}>
-                    <Icon
-                        name='md-chatbubbles'
-                        type='ionicon'
-                        color='#005696'
-                        size= {28}
-                        containerStyle = {{
-                            marginTop: 10,
-                            marginLeft: 20, 
-                            marginBottom: 5}}
-                        onPress={() => {Actions.comment({
-                            foodlistdata: foodlist.comments,
-                            foodlistid: key, 
-                            Ttype: 'foodlist', 
-                            cat_id: this.props.cat_id, 
-                            subcat_id: this.props.id,
-                            res_id: this.props.res_id
-                            })}} 
-                    />
-                        <View style={{
-                            marginTop: 10, 
-                            marginLeft: 20, 
-                            marginBottom: 10}}>
-                            <StarRating
-                                disabled={false}
-                                maxStars={5}
-                                rating={foodlist.user_rating}
-                                selectedStar={
-                                    () => this.openModal(key)
-                                    // (rating) => this.onStarRatingPress(rating)
-                                }
-                                fullStarColor = {'#ffb400'}
-                                starSize= {26}
-                                starStyle= {{ margin: 4 }}
-                                emptyStarColor= '#ffb400'
-                            />
-                        </View>
-                    </View>
-            }
-                </View>
-
-            </View>
-            )
-        })
+            <FlatList
+                data={this.state.foodData}
+                renderItem={this.foodMenuList}
+                extraData={this.state}
+                keyExtractor={(item, index) => index.toString()}
+            />
             : null
         }
         

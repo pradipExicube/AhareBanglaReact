@@ -56,7 +56,7 @@ foodSearch(reskey) {
                 ],
               )
         }else{
-            Actions.popAndPush('foodmenu',({id: reskey, resName: this.state.restaurantName}));
+            Actions.replace('foodmenu',({id: reskey, resName: this.state.restaurantName}));
         }
     }
     else{
@@ -111,9 +111,8 @@ foodSearch(reskey) {
     }
 
 goRestaurant(restype,resdata) {
+    // Actions.replace('restaurant',{restaurantType: restype, data: resdata},'tabs') 
     Actions.restaurant({restaurantType: restype, data: resdata}) 
-    // Actions.refresh("restaurant",{ mapdata: resdata});
-    // Actions.restaurant({ mapdata: resdata}) 
     
 }
 

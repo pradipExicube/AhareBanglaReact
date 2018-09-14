@@ -6,7 +6,8 @@ import {
   Dimensions,
   Image,
   ScrollView,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  FlatList
 } from 'react-native';
 import Card from './common/Card';
 import { Icon } from 'react-native-elements';
@@ -26,45 +27,51 @@ export default class SubCategory extends Component {
     goFoodList(data,key) {
         Actions.foodlist({data: data, id: key, cat_id: this.props.id, res_id: this.props.res_id});
     }
+
+    subCategoryList = ({item, index}) => {
+        return(
+
+            <View style= {{marginTop: 3, width: width}}>
+                <TouchableWithoutFeedback onPress={()=>{this.goFoodList(item,index)}}>
+                    <View>
+                    
+                        <Image
+                            style={styles.cardImage}
+                            source={{uri: item.img}}
+                        />
+
+                        <View style={styles.cardTextContainer}>
+                            <Text style={styles.textStyle}>{item.name}</Text>
+                            <Icon
+                                name='md-arrow-dropright-circle'
+                                type='ionicon'
+                                color='#a3d2f5'
+                                size= {30}
+                                containerStyle = {{ 
+                                    margin: 5,
+                                }}
+                            />
+                        </View>
+
+                    </View>
+                </TouchableWithoutFeedback>
+            </View>
+        )
+    }
+
     render() {
         return (
             <View>
                 <CustomHeader Headershow={true} showFeedbackButton={false} onPressFeedback={()=>{this.goFeedback()}} headerName='Sub Category List' showSearchButton={false} showLogoutButton={true} showBackbutton= {true}/>
             <ScrollView style={{ height:(height-100), width: width }}>
             {      
-                    this.props.data.subcategory ? 
-                    this.props.data.subcategory.map((subcat,key)=>{
-                      // console.log('newsData');
-                      // console.log(news.desc);             
-                  return(
-
-                <View key={key} style= {{marginTop: 3, width: width}}>
-                    <TouchableWithoutFeedback onPress={()=>{this.goFoodList(subcat,key)}}>
-                        <View>
-                        
-                            <Image
-                                style={styles.cardImage}
-                                source={{uri: subcat.img}}
-                            />
-
-                            <View style={styles.cardTextContainer}>
-                                <Text style={styles.textStyle}>{subcat.name}</Text>
-                                <Icon
-                                    name='md-arrow-dropright-circle'
-                                    type='ionicon'
-                                    color='#a3d2f5'
-                                    size= {30}
-                                    containerStyle = {{ 
-                                        margin: 5,
-                                    }}
-                                />
-                            </View>
-
-                        </View>
-                    </TouchableWithoutFeedback>
-                </View>
-                )
-            })
+                this.props.data.subcategory ? 
+                    <FlatList
+                        data={this.props.data.subcategory}
+                        renderItem={this.subCategoryList}
+                        extraData={this.state}
+                        keyExtractor={(item, index) => index.toString()}
+                    />
                 : null
             }
 

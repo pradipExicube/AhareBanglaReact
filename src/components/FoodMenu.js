@@ -7,7 +7,8 @@ import {
   Image,
   ScrollView,
   TouchableWithoutFeedback,
-  ActivityIndicator
+  ActivityIndicator,
+  FlatList
 } from 'react-native';
 import Card from './common/Card';
 import { Icon } from 'react-native-elements';
@@ -68,6 +69,37 @@ export default class FoodMenu extends Component {
     goSubCategory(data,key,res_id) {
         Actions.subcategory({data: data, id: key,res_id: res_id});
     }
+
+    foodCategoryList = ({item, index}) => {
+        return(
+            <View style= {{marginTop: 3, width: width}}>
+                <TouchableWithoutFeedback onPress={()=>{this.goSubCategory(item,index,this.props.id)}}>
+                    <View>
+
+                        <Image
+                            style={styles.cardImage}
+                            source={{uri: item.foodmenu_img}}
+                        />
+
+                        <View style={styles.cardTextContainer}>
+                            <Text style={styles.textStyle}>{item.name}</Text>
+                            <Icon
+                                name='md-arrow-dropright-circle'
+                                type='ionicon'
+                                color='#a3d2f5'
+                                size= {30}
+                                containerStyle = {{ margin: 5,
+                                }}
+                            />
+                        </View>
+
+                    </View>
+                </TouchableWithoutFeedback>
+            </View>
+        )
+    }
+
+
     render() {
   
     return (
@@ -114,35 +146,14 @@ export default class FoodMenu extends Component {
     (
         
             this.state.cat ? 
-            this.state.cat.map((category,key)=>{
-        
-        return(
-        <View key={key} style= {{marginTop: 3, width: width}}>
-            <TouchableWithoutFeedback onPress={()=>{this.goSubCategory(category,key,this.props.id)}}>
-                <View>
-        
-                    <Image
-                        style={styles.cardImage}
-                        source={{uri: category.foodmenu_img}}
-                    />
 
-                    <View style={styles.cardTextContainer}>
-                        <Text style={styles.textStyle}>{category.name}</Text>
-                        <Icon
-                            name='md-arrow-dropright-circle'
-                            type='ionicon'
-                            color='#a3d2f5'
-                            size= {30}
-                            containerStyle = {{ margin: 5,
-                            }}
-                        />
-                    </View>
+            <FlatList
+                data={this.state.cat}
+                renderItem={this.foodCategoryList}
+                extraData={this.state}
+                keyExtractor={(item, index) => index.toString()}
+            />
 
-                </View>
-            </TouchableWithoutFeedback>
-        </View>
-        )
-        })
           : null
             )
         )
