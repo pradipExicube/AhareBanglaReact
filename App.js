@@ -1,5 +1,5 @@
 import React,{ Component } from 'react';
-import { StyleSheet, Text, View, ScrollView,ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, ScrollView,ActivityIndicator, StatusBar } from 'react-native';
 import { Router, Scene, Tabs, Stack, Actions } from 'react-native-router-flux';
 import HomeScreen from './src/components/HomeScreen';
 import MapScreen from './src/components/MapScreen';
@@ -68,22 +68,9 @@ export default class App extends Component {
 
             </Tabs>
 
-            {/* <Tabs hideNavBar={true} key="maptabs" lazy={true} tabs={true} animationEnabled={false} tabStyle={{borderWidth: 1, borderColor: 'rgba(0, 86, 150, 0.3)'}} activeBackgroundColor={'#005696'} labelStyle={{color: '#fff', paddingBottom: 12, fontSize: 15}} tabBarPosition="bottom" tabBarStyle={styles.tabBar}>
+            <Scene key="programmeSchedule" hideNavBar={true} title="Programme Schedule"  component={ProgrammeSchedule} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
 
-              <Scene key="home"  hideNavBar={true} title="Home" component={HomeScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} style={{color:'red'}} headerTintColor='#fff'/>
-
-              <Scene key="map" hideNavBar={true} title="Map" component={MapScreen} navigationBarStyle={{backgroundColor:'#005696',}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
-
-              <Scene key="restaurant" initial={true}  hideNavBar={true} title="Restaurant" component={RestaurantScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
-
-              <Scene key="news"  hideNavBar={true} title="News" component={NewsScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
-
-            </Tabs> */}
-            {/* <Scene key="restaurant" tabs={true} hideNavBar={true} title="Restaurant" component={RestaurantScreen} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/> */}
-
-            <Scene key="programmeSchedule" title="Programme Schedule"  component={ProgrammeSchedule} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
-
-            <Scene key="parking" title="Parking"  component={Parking} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
+            <Scene key="parking" title="Parking" hideNavBar={true}  component={Parking} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
 
             <Scene key="foodmenu" hideNavBar={true} title="Food Menu"  component={FoodMenu} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
 
@@ -91,13 +78,13 @@ export default class App extends Component {
 
             <Scene key="foodlist" hideNavBar={true} title="Food Menu List"  component={FoodMenuList} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
 
-            <Scene key="about" title="About"  component={AboutPage} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
+            <Scene key="about" title="About" hideNavBar={true}  component={AboutPage} navigationBarStyle={{backgroundColor:'#005696', height:30}} titleStyle={{color:'white',marginHorizontal:0}} headerTintColor='#fff'/>
 
-            <Scene key="search" title="Search"  component={SearchPage} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
+            <Scene key="search" title="Search" hideNavBar={true}  component={SearchPage} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
 
             <Scene key="comment" hideNavBar={true} title="Comment"  component={CommentPage} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
 
-            <Scene key="feedback" title="Staff Review"  component={Feedback} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
+            <Scene key="feedback" title="Staff Review" hideNavBar={true}  component={Feedback} navigationBarStyle={{backgroundColor:'#005696'}} titleStyle={{color:'white'}} headerTintColor='#fff'/>
             
           </Scene>    
         </Router>
@@ -142,7 +129,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    top: 23,
+    top: StatusBar.currentHeight,
   },
   tabBar: {
     backgroundColor: '#008bf2',

@@ -204,8 +204,9 @@ export default class LoginPage extends Component {
             <View
                 style={{ top: (height-505), justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent'}}>
                 <Image
-                style={{ justifyContent: 'center', alignItems: 'center', width: '80%', height: 220}}
-                source={require('../assets/images/loginPlate.png')}
+                  style={{ justifyContent: 'center', alignItems: 'center', width: '80%', height: 220}}
+                  resizeMode={'stretch'}
+                  source={require('../assets/images/loginPlate.png')}
                 />
             </View>
 

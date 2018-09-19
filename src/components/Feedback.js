@@ -253,9 +253,14 @@ export default class Feedback extends Component {
                                     (rating) => this.onStarRatingPress(rating)
                                 }
                                 fullStarColor = {'#012f51'}
-                                starSize= {35}
+                                starSize= {38}
                                 starStyle= {{ margin: 0 }}
                                 emptyStarColor= '#012f51'
+                                emptyStarColor= '#ffb400'
+                                fullStar={'ios-star'}
+                                halfStar={'ios-star-half'}
+                                emptyStar={'ios-star-outline'}
+                                iconSet={'Ionicons'}
                             />
                         </View>
                     </View>

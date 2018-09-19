@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import * as firebase from 'firebase';
 import { Actions } from 'react-native-router-flux';
+import CustomHeader from './common/CustomHeader';
 // import Button from './common/Button';
 
 var {width,height} = Dimensions.get('window');
@@ -37,10 +38,34 @@ componentWillMount() {
     let ref = firebase.database().ref('rastaurants');
     ref.on('value',(snap)=>{
       if(snap.val()){
-        this.setState({restaurantDetails: snap.val(), showloading: false});
+
+        restaurantData = snap.val();
+        var dSSdata=[];
+
+        for(let i=0;i<restaurantData.length;i++) {
+          if(restaurantData[i].ratings){
+              let obj = restaurantData[i].ratings;
+              let rating = 0;
+              let count = 0;
+              for(let key in obj){
+                  rating = rating + parseInt(obj[key].rate);
+                  count++;
+              }
+              restaurantData[i].user_rating = rating/count;
+              dSSdata.push(restaurantData[i]);
+          }
+          else{
+            restaurantData[i].user_rating = 0;
+            dSSdata.push(restaurantData[i])
+          }
+    
+      }
+
+
+        this.setState({restaurantDetails: dSSdata, showloading: false});
       }
     })
-  }
+}
 
 foodSearch(reskey) {
     if(this.state.seachtype == 'restaurant') {
@@ -94,7 +119,7 @@ foodSearch(reskey) {
                     if(this.state.menufound=true){break;}
 
                 }
-            }
+            }  
         }
     }
 
@@ -112,7 +137,7 @@ foodSearch(reskey) {
 
 goRestaurant(restype,resdata) {
     // Actions.replace('restaurant',{restaurantType: restype, data: resdata},'tabs') 
-    Actions.restaurant({restaurantType: restype, data: resdata}) 
+    Actions.restaurant({restaurantType: restype, data: resdata, allResData: this.state.restaurantDetails}) 
     
 }
 
@@ -189,6 +214,9 @@ reloadData(){
  render() {
         return (
             <View>
+            <CustomHeader Headershow={true} showFeedbackButton={false} onPressFeedback={()=>{this.goFeedback()}} headerName='Search' showSearchButton={false} showLogoutButton={false} showBackbutton= {true}/>
+     
+            <View>
                 <Text style={{color: 'rgba(0, 86, 150, 0.9)',fontWeight: 'normal',fontSize: 18,marginTop: 20,marginLeft: 20}}>Search Type</Text>
                 <View style={{borderBottomWidth: 1,borderBottomColor: 'rgba(0, 86, 150, 0.3)',backgroundColor: 'rgba(0, 86, 150, 0.2)',marginTop: 10,margin: 20}}>
                     <Picker
@@ -212,8 +240,10 @@ reloadData(){
                 </View>
                 <Image
                     style={styles.backgroundImage}
+                    resizeMode={'contain'}
                     source={require('../assets/images/innerPlate2.png')}
                 />  
+            </View>
             </View>
         );
     }

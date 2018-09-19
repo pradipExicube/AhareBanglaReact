@@ -105,7 +105,7 @@ export default class FoodMenu extends Component {
     return (
 
         
-    <View style={styles.containerStyle}>
+    <View>
     {
         this.props.resName ?
         <CustomHeader Headershow={true} showFeedbackButton={false} onPressFeedback={()=>{this.goFeedback()}} headerName={this.props.resName} showSearchButton={false} showLogoutButton={true} showBackbutton= {true}/>

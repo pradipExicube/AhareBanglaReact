@@ -6,9 +6,11 @@ import {
   Dimensions,
   Image,
   ScrollView,
-  ActivityIndicator
+  ActivityIndicator,
+  FlatList
 } from 'react-native';
 import * as firebase from 'firebase';
+import CustomHeader from './common/CustomHeader';
 var {width,height} = Dimensions.get('window');
 export default class AboutPage extends Component {
     constructor(props) {
@@ -19,44 +21,58 @@ export default class AboutPage extends Component {
           }
           let ref= firebase.database().ref('about');
           console.log("about page")
+          let about = []
           ref.once('value',(snapshot)=>{
             if(snapshot.val()){
-                this.setState({aboutData: snapshot.val(), showloading: false});
+                about.push(snapshot.val())
+                this.setState({aboutData: about, showloading: false},()=>{console.log(this.state.aboutData)});
             }
           })
     }
 
- render() {
-    if(this.state.showloading){
+    aboutPageData = ({item, index}) => {
         return (
-            <View style={[styles.loadingcontainer, styles.loadinghorizontal]}>
-                <ActivityIndicator size="large" color="#0000ff" />
+            <View>
+                <Image
+                    style={{width: 160 ,height: 160,borderRadius: 80,borderWidth: 5,borderColor: '#005696',top: 20,alignSelf: 'center'}}
+                    source={{uri: item.image}}
+                />
+            
+        
+        
+                <View style={{marginTop: 30}}>
+                    <Text style={{color: '#005696',fontSize: 20,fontWeight: 'bold',textAlign: 'center'}}>{item.heading}
+                    </Text>
+                    <Text style={{color: '#236ca3',fontSize: 16,fontWeight: 'bold',marginTop: 15,textAlign: 'center',lineHeight: 20}}>{item.subheading}</Text>
+                    <Text style={{color: '#012f51',fontSize: 14,margin: 15,textAlign: 'justify',lineHeight: 25}}>{item.description}</Text>
+                </View>
             </View>
         )
-      }else{
-        return (
-            <ScrollView style={{backgroundColor: '#b8e1ff',width: width,height: height-80,top: 0,position: 'absolute',}}
-                    contentContainerStyle={{justifyContent: 'center',alignItems:'center',}}>
-
-                <View>
-                        <Image
-                            style={{width: 160 ,height: 160,borderRadius: 80,borderWidth: 5,borderColor: '#005696',top: 20,alignSelf: 'center'}}
-                            source={{uri: this.state.aboutData.image}}
-                        />
-                    
-                
-                
-                        <View style={{marginTop: 30}}>
-                            <Text style={{color: '#005696',fontSize: 20,fontWeight: 'bold',textAlign: 'center'}}>{this.state.aboutData.heading}
-                            </Text>
-                            <Text style={{color: '#236ca3',fontSize: 16,fontWeight: 'bold',marginTop: 15,textAlign: 'center',lineHeight: 20}}>{this.state.aboutData.subheading}</Text>
-                            <Text style={{color: '#012f51',fontSize: 14,margin: 15,textAlign: 'justify',lineHeight: 25}}>{this.state.aboutData.description}</Text>
-                        </View>
-                </View>
-
-            </ScrollView>
-        );
     }
+
+ render() {
+    return(
+        <View style={{width: width, height: height, backgroundColor: '#b8e1ff'}}>
+            <CustomHeader Headershow={true} showFeedbackButton={false} onPressFeedback={()=>{this.goFeedback()}} headerName='About' showSearchButton={false} showLogoutButton={false} showBackbutton= {true}/>
+        {   
+        (this.state.showloading) ? 
+            (
+                <View style={[styles.loadingcontainer, styles.loadinghorizontal]}>
+                    <ActivityIndicator size="large" color="#0000ff" />
+                </View>
+            )
+            :
+            (
+                <FlatList
+                data={this.state.aboutData}
+                extraData={this.state}
+                renderItem={this.aboutPageData}
+                keyExtractor={(item, index) => index.toString()}
+                />
+            )
+        }
+        </View>
+        )
     }
 }
 

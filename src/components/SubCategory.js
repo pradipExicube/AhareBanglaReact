@@ -63,7 +63,6 @@ export default class SubCategory extends Component {
         return (
             <View>
                 <CustomHeader Headershow={true} showFeedbackButton={false} onPressFeedback={()=>{this.goFeedback()}} headerName='Sub Category List' showSearchButton={false} showLogoutButton={true} showBackbutton= {true}/>
-            <ScrollView style={{ height:(height-100), width: width }}>
             {      
                 this.props.data.subcategory ? 
                     <FlatList
@@ -80,7 +79,6 @@ export default class SubCategory extends Component {
                     resizeMode='contain'
                     source={require('../assets/images/innerPlate2.png')}
                 />  
-            </ScrollView>
             </View>
         );
     }

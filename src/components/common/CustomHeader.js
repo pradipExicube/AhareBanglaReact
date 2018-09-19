@@ -123,14 +123,13 @@ showFeedback=()=>{
 }
 
  showHeader=()=>{
- if(Headershow){
- return (
- <View style={headerView}>
-    <Text style={welcomeText} numberOfLines={1} ellipsizeMode={'tail'}>{headerName}</Text>
- </View>
- )
- }
-
+    if(Headershow){
+        return (
+            <View style={headerView}>
+                <Text style={welcomeText} numberOfLines={1} ellipsizeMode={'tail'}>{headerName}</Text>
+            </View>
+        )
+    }
  }
 
  
@@ -154,12 +153,12 @@ showFeedback=()=>{
 };
 
 const styles = {
- mainView:{height:60, backgroundColor:'#005696'},
- mainFlex: { flexDirection: 'row', justifyContent:'space-between', width: Dimensions.get('window').width },
+ mainView:{height:60, backgroundColor:'#005696',alignItems:'center',justifyContent:'center'},
+ mainFlex: { flexDirection: 'row', justifyContent:'space-between', alignItems:'center', width: Dimensions.get('window').width },
  childFlex:{ flexDirection: 'row' },
- backIconView:{marginTop:12,left:15, marginBottom:10},
+ backIconView:{left:15},
  welcomeText:{color:'#fff',fontWeight:'bold', fontSize: 18,},
- headerView:{marginLeft:35,marginTop: 12,width:210},
+ headerView:{marginLeft:35, width:210},
  logoutView:{marginTop:12, marginBottom:10, marginRight: 15},
  feedbackview:{marginTop:15, marginBottom:10, marginRight: 1},
  feedbackText:{color:'#fff',fontSize: 16},
@@ -173,7 +172,7 @@ const styles = {
   },
   logoutText: { 
       color: 'red', 
-      fontSize: 18,
+      fontSize: 20,
       fontWeight: 'bold', 
       alignSelf: 'center',
       padding: 5

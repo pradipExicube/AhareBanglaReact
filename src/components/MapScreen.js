@@ -113,7 +113,6 @@ export default class MapScreen extends Component {
             console.log("map page type : " + resname);
               Actions.restaurant({mapdata: newArr});
             // Actions.replace('restaurant',{ mapdata: newArr});
-            // Actions.replace('restaurant',{ mapdata: newArr});
             // Actions.replace('restaurant',{ mapdata: newArr}, 'tabs');
             // console.log("position checking..!!");
             // console.log(newArr);
@@ -127,7 +126,7 @@ export default class MapScreen extends Component {
   render() { 
     return (
       <View>
-        <CustomHeader Headershow={true} showFeedbackButton={false} headerName="Map" showSearchButton={false} showLogoutButton={false} showBackbutton= {false} onPressLogout={()=>{alert("Logout Clicked")}} onPressBack={()=>{alert("back icon Clicked")}}/>       
+        <CustomHeader Headershow={true} showFeedbackButton={false} headerName="Map" showSearchButton={false} showLogoutButton={false} showBackbutton= {false} onPressLogout={()=>{alert("Logout Clicked")}} onPressBack={()=>{alert("back icon Clicked")}}/>
         <ScrollView>
           <ScrollView horizontal>
           <TouchableWithoutFeedback onPress={(event)=>{this.goRestaurant(event)}}>
@@ -144,13 +143,4 @@ export default class MapScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-    color: '#ffffff',
-  },
 });

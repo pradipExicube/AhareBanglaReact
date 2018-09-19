@@ -127,9 +127,13 @@ foodMenuList = ({item, index}) => {
                                 // (rating) => this.onStarRatingPress(rating)
                             }
                             fullStarColor = {'#ffb400'}
-                            starSize= {26}
+                            starSize= {32}
                             starStyle= {{ margin: 4 }}
                             emptyStarColor= '#ffb400'
+                            fullStar={'ios-star'}
+                            halfStar={'ios-star-half'}
+                            emptyStar={'ios-star-outline'}
+                            iconSet={'Ionicons'}
                         />
                     </View>
                 </View>
@@ -166,9 +170,13 @@ foodMenuList = ({item, index}) => {
                                 // (rating) => this.onStarRatingPress(rating)
                             }
                             fullStarColor = {'#ffb400'}
-                            starSize= {26}
+                            starSize= {32}
                             starStyle= {{ margin: 4 }}
                             emptyStarColor= '#ffb400'
+                            fullStar={'ios-star'}
+                            halfStar={'ios-star-half'}
+                            emptyStar={'ios-star-outline'}
+                            iconSet={'Ionicons'}
                         />
                     </View>
                 </View>
@@ -233,9 +241,13 @@ foodMenuList = ({item, index}) => {
                             (rating) => this.onStarRatingPress(rating)
                         }
                         fullStarColor = {'#ddc600'}
-                        starSize= {26}
+                        starSize= {34}
                         starStyle= {{ margin: 6, }}
                         emptyStarColor= '#ddc600'
+                        fullStar={'ios-star'}
+                        halfStar={'ios-star-half'}
+                        emptyStar={'ios-star-outline'}
+                        iconSet={'Ionicons'}
                     />
                 </View>              
             </View>

@@ -19,7 +19,6 @@ import { Icon, Button } from 'react-native-elements'
 import { Actions } from 'react-native-router-flux';
 import * as firebase from 'firebase';
 import CustomHeader from './common/CustomHeader';
-import { NavigationEvents } from 'react-navigation';
 
 var {width,height} = Dimensions.get('window');
 
@@ -36,6 +35,7 @@ export default class RestaurantScreen extends Component {
           logintype: '',
           showloading: true,
           isFetching: false,
+          searchData: null
       };
   }
 
@@ -81,7 +81,7 @@ export default class RestaurantScreen extends Component {
           }
     
       }
-      this.setState({allvar: dSSdata, showloading: false},()=>{this.state.allvar});
+      this.setState({searchData: dSSdata, showloading: false});
 
       }else {
         console.log('not found');
@@ -173,119 +173,7 @@ export default class RestaurantScreen extends Component {
     console.log('click end.....');
   }
 
-  mapRestaurants = ({item,index}) => {
-// console.log(restaurants)
-    return(
-          
-      <Card>
-        <CardSection>
-          <TouchableWithoutFeedback onPress={()=>{this.goFoodmenu(item,index)}}>
-            <Image
-                style={styles.IconStyle}
-                resizeMode='stretch'
-                source={{uri: item.logo}}
-            />
-          </TouchableWithoutFeedback>
-          <View style={{ marginTop: 10, marginLeft: 10, }}>
-            <TouchableWithoutFeedback onPress={()=>{this.goFoodmenu(item,index)}}>
-              <View style={{ width: width-150  }}>
-                <Text style={{ color: '#005696', marginRight: 12 }}>{item.restaurants_name}</Text>
-              </View>
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={()=>{this.goFoodmenu(item,index)}}>
-              <View style={{ width: width-150  }}>
-                <Text style={{ color: '#012f51', marginTop: 12 }}>{item.positions}</Text>
-              </View>
-              </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={()=>{this.goFoodmenu(item,index)}}>
-              <View>  
-                <Text style={{ color: '#b1b1b1', marginTop: 12 }}>Stall No: {item.stall_no}</Text>
-              </View>
-            </TouchableWithoutFeedback>
-
-            {
-                (this.state.logintype == "staff") ?
-            
-            <View style={{ flexDirection: 'row' }}>
-
-              <StarRating
-                disabled={true}
-                maxStars={5}
-                rating={item.user_rating}
-                selectedStar={
-                  () => {this.openModal(index)}
-                }
-                fullStarColor = {'#ddc600'}
-                starSize= {18}
-                starStyle= {{ marginTop: 16, margin: 2 }}
-                emptyStarColor= '#ddc600'
-              />
-                
-              <Icon
-                name='md-chatbubbles'
-                type='ionicon'
-                color='#005696'
-                size= {28}
-                containerStyle = {{marginLeft: 35, marginTop: 8}}
-                onPress={() => Actions.feedback({data: item, id: index, Ttype: 'res'})} 
-              />
-              <Icon
-                name='md-share'
-                type='ionicon'
-                color='#005696'
-                size= {28}
-                containerStyle = {{marginLeft: 17, marginTop: 8}}
-                onPress={() => this.shareIt(item,index)} 
-              />
-            </View>
-            :
-            <View style={{ flexDirection: 'row' }}>
-
-            <StarRating
-              disabled={false}
-              maxStars={5}
-              rating={item.user_rating}
-              selectedStar={
-                () => {this.openModal(index)}
-              }
-              fullStarColor = {'#ddc600'}
-              starSize= {18}
-              starStyle= {{ marginTop: 16, margin: 2 }}
-              emptyStarColor= '#ddc600'
-            />
-              
-            <Icon
-              name='md-chatbubbles'
-              type='ionicon'
-              color='#005696'
-              size= {28}
-              containerStyle = {{marginLeft: 35, marginTop: 8}}
-              onPress={() => Actions.comment({data: item, id: index, Ttype: 'res'})} 
-            />
-            <Icon
-              name='md-share'
-              type='ionicon'
-              color='#005696'
-              size= {28}
-              containerStyle = {{marginLeft: 17, marginTop: 8}}
-              onPress={() => this.shareIt(item,index)} 
-            />
-          </View>    
-          }
-          </View>
-        </CardSection>
-      </Card>
-      
-
-    )
-
-
-  }
-
   restaurants = ({item,index}) => {
-    // console.log('item start')
-    // console.log(item)
-    // console.log('item end')
 
     return(
       
@@ -328,9 +216,13 @@ export default class RestaurantScreen extends Component {
                   () => {this.openModal(index)}
                 }
                 fullStarColor = {'#ddc600'}
-                starSize= {18}
+                starSize= {22}
                 starStyle= {{ marginTop: 16, margin: 2 }}
                 emptyStarColor= '#ddc600'
+                fullStar={'ios-star'}
+                halfStar={'ios-star-half'}
+                emptyStar={'ios-star-outline'}
+                iconSet={'Ionicons'}
               />
                 
               <Icon
@@ -361,9 +253,13 @@ export default class RestaurantScreen extends Component {
                 () => {this.openModal(index)}
               }
               fullStarColor = {'#ddc600'}
-              starSize= {18}
-              starStyle= {{ marginTop: 16, margin: 2 }}
+              starSize= {22}
+              starStyle= {{ marginTop: 15, margin: 2 }}
               emptyStarColor= '#ddc600'
+              fullStar={'ios-star'}
+              halfStar={'ios-star-half'}
+              emptyStar={'ios-star-outline'}
+              iconSet={'Ionicons'}
             />
               
             <Icon
@@ -396,7 +292,7 @@ export default class RestaurantScreen extends Component {
     console.log("hello "); 
     // console.log(this.state.allvar);
     console.log('mapdata start')
-    console.log(this.props.mapdata)
+    console.log(this.state.allvar)
     console.log('mapdata end')
       return (
       <View>
@@ -419,29 +315,40 @@ export default class RestaurantScreen extends Component {
         <FlatList
           data={this.props.mapdata}
           extraData={this.state}
-          renderItem={this.mapRestaurants}
+          renderItem={this.restaurants}
           keyExtractor={(item, index) => index.toString()}
-          onRefresh={()=>{ this.setState({ isFetching: true }, () => {Actions.refresh({mapdata:undefined}); this.setState({isFetching: false}); } )} }
+          onRefresh={()=>{ this.setState({ isFetching: true }, () => {Actions.refresh({mapdata:undefined, restaurantType: undefined, data: undefined}); this.setState({isFetching: false}); } )} }
           refreshing={this.state.isFetching}
         />
        :
-        (
-          this.state.allvar ? 
+        (this.state.searchData ? 
           <FlatList
-            data={this.state.allvar}
+            data={this.state.searchData}
             renderItem={this.restaurants}
             extraData={this.state}
             keyExtractor={(item, index) => index.toString()}
-            onRefresh={()=>{ this.setState({ isFetching: true }, () => {Actions.refresh({mapdata:undefined}); this.setState({isFetching: false}); } )} }
+            onRefresh={()=>{ this.setState({ isFetching: true, searchData:null, allvar: this.props.allResData }, () => {Actions.refresh({mapdata:undefined, restaurantType: undefined, data: undefined}); this.setState({isFetching: false}); } )} }
             refreshing={this.state.isFetching}
           />
-          : null
+        :
+          (
+            this.state.allvar ? 
+              <FlatList
+                data={this.state.allvar}
+                renderItem={this.restaurants}
+                extraData={this.state}
+                keyExtractor={(item, index) => index.toString()}
+                onRefresh={()=>{ this.setState({ isFetching: true }, () => {Actions.refresh({mapdata:undefined, restaurantType: undefined, data: undefined}); this.setState({isFetching: false}); } )} }
+                refreshing={this.state.isFetching}
+              />
+            : null
+            )
           )
         }
 
         <Modal
             visible={this.state.modalVisible}
-            animationType={'slide'}
+            // animationType={'slide'}
             transparent={true}
             onRequestClose={() => this.closeModal()}
         >
@@ -474,9 +381,13 @@ export default class RestaurantScreen extends Component {
                             (rating) => this.onStarRatingPress(rating)
                         }
                         fullStarColor = {'#ddc600'}
-                        starSize= {26}
+                        starSize= {34}
                         starStyle= {{ margin: 6, }}
                         emptyStarColor= '#ddc600'
+                        fullStar={'ios-star'}
+                        halfStar={'ios-star-half'}
+                        emptyStar={'ios-star-outline'}
+                        iconSet={'Ionicons'}
                     />
                   </View>              
               </View>
@@ -517,7 +428,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   innerContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: '#eee',
     width: '75%',
     borderRadius: 5,
     height: 120

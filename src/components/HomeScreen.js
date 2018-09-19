@@ -134,10 +134,10 @@ render() {
     <View style={styles.container}>
     
         <Image
-            style={{width: width ,height: 200, top: 20}}
+            style={{width: width ,height: 200, top: 28}}
             source={require('../assets/images/homeBanner.jpg')}
         />
-        <ScrollView style={{height:(height-320), width: width, top: 20}}>
+        <ScrollView style={{height:(height-330), width: width, top: 28}}>
             <TouchableOpacity onPress={()=>{this.openAbout()}}>
                 <View style={styles.ListStyle}>
                     <Image
